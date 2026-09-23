@@ -1,0 +1,21 @@
+{
+  "cases": {
+    "d1": {
+      "p0_output_tps": 181.5,
+      "pf_output_tps": 490.6,
+      "tpot_sla_milliseconds": 74,
+      "ttft_sla_seconds": 96.4
+    },
+    "d2": {
+      "p0_output_tps": 5.837,
+      "pf_output_tps": 25.58,
+      "tpot_sla_milliseconds": 380,
+      "ttft_sla_seconds": 60.5
+    }
+  },
+  "dataset_manifest_sha256": "48146066efbd0266acb2dc9aab27a491666d9004e980c71ca73b8386a729107c",
+  "evidence": "reference calibration 2026-09-10",
+  "protocol": "dpsk-stage2-v2",
+  "schema_version": 2,
+  "status": "validated"
+}

@@ -1,0 +1,13 @@
+name: bitmatrix
+threads: 1
+sizes:
+  public:
+  - 1024:d50
+  - 512:d10
+public_score:
+  1024:d50:
+    B: 1.0
+    T: 84.0
+  512:d10:
+    B: 1.0
+    T: 62.0

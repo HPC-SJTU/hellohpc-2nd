@@ -1,0 +1,29 @@
+# Cheatsheet runtime configuration.
+
+model:
+  base_url: https://models.sjtu.edu.cn/api/v1
+
+budget:
+  wall_clock_min: 20
+
+tools:
+  subprocess_timeout_seconds: 300
+  bench_timeout_seconds: 600
+  profile_timeout_seconds: 120
+
+compile:
+  cxx: /usr/bin/g++
+  cxxflags: "-O3 -march=native -fopenmp -std=c++17 -funroll-loops"
+  san_flags: "-fsanitize=undefined -fsanitize-undefined-trap-on-error -g -O1 -fopenmp -std=c++17"
+  vec_flags: "-fopt-info-vec-optimized -fopt-info-vec-missed"
+
+pinning:
+  cores: "auto"
+  omp_num_threads: 1
+  omp_proc_bind: close
+  omp_places: cores
+
+scoring:
+  variance_threshold_pct: 10.0
+  timing_pilot_scale: 0.5
+  sentinel_max_measurement_attempts: 3

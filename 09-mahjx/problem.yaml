@@ -1,0 +1,97 @@
+version: hellohpc/v0.4.0
+
+problem:
+  id: mahjx
+  title: MahjongX
+
+workspace:
+  editable:
+    - build.sh
+    - run.sh
+    - src/**
+  readonly:
+    - checker/**
+    - interactor/**
+    - judger/provision.sh
+    - judger/timing.py
+  exclude:
+    - "**/build/**"
+    - "**/obj/**"
+    - "**/__pycache__/**"
+    - src/system
+
+workflow:
+  setup:
+    - id: judge-build
+      run: bash -l judger/provision.sh
+      timeout: 10m
+      failure-status: infrastructure_error
+      timeout-status: infrastructure_error
+    - id: build
+      run: bash -l build.sh
+      timeout: 10m
+      failure-status: compile_error
+      timeout-status: compile_error
+
+  # One scale: apply the score curve once to the sum, not once per input.
+  matrix:
+    id: [total]
+    score: 100
+    workspace:
+      readonly:
+        - sample/game_record_game1.txt
+        - sample/game_record_game2.txt
+        - sample/setup_match.txt
+      secret:
+        - sample/game_record_game1_full_analyze.txt
+        - sample/game_record_game2_full_analyze.txt
+
+  steps:
+    - id: game1
+      timeout: 2000s
+      run: |
+        ./interactor/build/interactor sample/game_record_game1.txt 15 -- \
+          bash -l run.sh sample/setup_match.txt > game1.out 2> game1.err
+    - id: game2
+      timeout: 2000s
+      run: |
+        ./interactor/build/interactor sample/game_record_game2.txt 15 -- \
+          bash -l run.sh sample/setup_match.txt > game2.out 2> game2.err
+
+    - id: correctness
+      secret: true
+      failure-status: wrong_answer
+      run: |
+        set -e
+        for game in game1 game2; do
+          ./checker/build/checker "sample/game_record_${game}_full_analyze.txt" "$game.out"
+        done
+
+    - id: timing
+      failure-status: invalid_output
+      run: python3 judger/timing.py
+
+  finally:
+    - id: collect-outputs
+      run: |
+        set -e
+        for output in game1.out game1.err game2.out game2.err; do
+          if [[ -f "$output" && ! -L "$output" ]]; then
+            cp -- "$output" "$HELLOHPC_ARTIFACTS/"
+          fi
+        done
+
+  result:
+    message: "${{ steps.timing.outputs.message }}"
+    metrics:
+      performance:
+        value: "${{ steps.timing.outputs.elapsed }}"
+        samples: "${{ steps.timing.outputs.samples }}"
+        aggregation: sum
+        unit: s
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.timing.outputs.elapsed }}"
+        full-at: 1000
+        zero-at: 2000

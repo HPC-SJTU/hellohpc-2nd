@@ -1,0 +1,124 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-01"
+initial_tasks = [
+  { id = "seed-flex-0", task_type = "FlexCpu" },
+  { id = "seed-flex-1", task_type = "FlexCpu" },
+]
+
+[[releases]]
+id = "memory-burst"
+task_type = "MemBurst"
+at = { min = 90, max = 140 }
+count = { min = 10, max = 14 }
+
+[[releases]]
+id = "late-cpu"
+task_type = "FlexCpu"
+at = { min = 170, max = 230 }
+count = { min = 12, max = 16 }
+
+[[workflow_templates]]
+id = "pair"
+instances = { min = 24, max = 28 }
+nodes = [
+  { id = "a", task_type = "TypeA" },
+  { id = "b", task_type = "TypeB" },
+  { id = "join", task_type = "Join", depends_on = ["a", "b"] },
+]
+
+[safety_limits]
+max_generated_tasks = 512
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "TypeA"
+runtime_work = { min = 80, max = 120 }
+setup_work = 20
+cpu_demand = 6
+memory_reservation = 4
+
+[[task_types]]
+id = "TypeB"
+runtime_work = { min = 90, max = 130 }
+setup_work = 20
+cpu_demand = 6
+memory_reservation = 5
+
+[[task_types]]
+id = "Join"
+runtime_work = { min = 40, max = 60 }
+setup_work = 35
+cpu_demand = 4
+memory_reservation = 6
+required_capabilities = ["merge"]
+
+[[task_types]]
+id = "Tail"
+runtime_work = { min = 60, max = 90 }
+setup_work = 25
+cpu_demand = 5
+memory_reservation = 4
+
+[[task_types]]
+id = "FlexCpu"
+runtime_work = { min = 70, max = 100 }
+setup_work = 15
+cpu_demand = 8
+memory_reservation = 3
+
+[[task_types]]
+id = "MemBurst"
+runtime_work = { min = 120, max = 180 }
+setup_work = 50
+cpu_demand = 3
+memory_reservation = 12
+required_capabilities = ["memory"]
+
+[[derivations]]
+id = "join-tail"
+parent_type = "Join"
+successor_type = "Tail"
+fanout = { min = 1, max = 1 }
+
+[[workers]]
+id = "worker-0-fast-a"
+cpu_capacity = 18
+memory_capacity = 20
+capabilities = ["merge"]
+duration_multipliers = [
+  { task_type = "TypeA", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "Join", ratio = { numerator = 1, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-1-fast-b"
+cpu_capacity = 18
+memory_capacity = 20
+duration_multipliers = [
+  { task_type = "TypeB", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "Tail", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-memory"
+cpu_capacity = 12
+memory_capacity = 32
+capabilities = ["memory", "merge"]
+duration_multipliers = [
+  { task_type = "MemBurst", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "TypeA", ratio = { numerator = 5, denominator = 4 } },
+  { task_type = "Join", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-3-cpu"
+cpu_capacity = 22
+memory_capacity = 14
+duration_multipliers = [
+  { task_type = "FlexCpu", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "TypeA", ratio = { numerator = 1, denominator = 2 } },
+]

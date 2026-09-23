@@ -1,0 +1,4 @@
+data/public-dataset.jsonl filter=lfs diff=lfs merge=lfs -text
+data/dpsk-final/*.jsonl filter=lfs diff=lfs merge=lfs -text
+data/dpsk-final/*.jsonl !text !filter !merge !diff
+data/public-dataset.jsonl !text !filter !merge !diff

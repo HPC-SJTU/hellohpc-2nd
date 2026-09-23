@@ -1,0 +1,133 @@
+version: hellohpc/v0.4.0
+
+problem:
+  id: kernel-field
+  title: Kernel Field Acceleration (Public Self-Test)
+
+workspace:
+  editable:
+    - src/solver.py
+    - env.sh
+  readonly:
+    - timing.py
+    - judge/__init__.py
+    - judge/run_case.py
+    - judge/limits.py
+    - judge/score_transform.py
+    - judge/select_cpus.py
+  exclude:
+    - "**/__pycache__/**"
+    - "**/*.pyc"
+
+inputs:
+  warmup:
+    type: integer
+    default: 1
+    min: 0
+    max: 5
+  repeat:
+    type: integer
+    default: 3
+    min: 1
+    max: 9
+
+workflow:
+  working-directory: .
+  fail-fast: true
+  environments:
+    runtime:
+      shell: [bash, -l]
+      run: |
+        set -e
+        source ./env.sh
+        command -v python3 >/dev/null 2>&1
+        command -v taskset >/dev/null 2>&1
+        python3 -c 'import numpy; print(numpy.__version__)' >/dev/null
+
+  setup:
+    - id: prepare-cpus
+      run: python3 judge/select_cpus.py --count 32 --allow-fewer
+      failure-status: infrastructure_error
+    - id: prepare
+      environment: runtime
+      run: >-
+        exec taskset -c "${{ steps['prepare-cpus'].outputs.list }}"
+        python3 judge/limits.py --memory-gib 64 --
+        env OMP_NUM_THREADS=32 OMP_THREAD_LIMIT=32 OPENBLAS_NUM_THREADS=32 MKL_NUM_THREADS=32
+        PYTHONPATH=src python3 -c 'import solver; assert callable(solver.compute_field)'
+      timeout: 5m
+      failure-status: runtime_error
+
+  # Public data only. The judge branch has its own six-case formal matrix.
+  matrix:
+    id: [sample, public-large-b]
+    kind: [sample, performance]
+    cpu_count: [1, 32]
+    input: data/${id}.npz
+    output: outputs/${id}.txt
+    reference: data/${id}.ref.txt
+    score: [0, 50]
+    full_time_ms: [1, 1200]
+    max_time_ms: [2, 35000]
+    workspace:
+      readonly: data/${id}.npz
+      secret: data/${id}.ref.txt
+
+  steps:
+    - id: cpus
+      run: python3 judge/select_cpus.py --count "${{ matrix.cpu_count }}"
+      failure-status: infrastructure_error
+    - id: benchmark
+      environment: runtime
+      timeout: 7m
+      run: >-
+        exec taskset -c "${{ steps.cpus.outputs.list }}"
+        python3 judge/limits.py --memory-gib 64 --
+        python3 judge/run_case.py
+        --solver src/solver.py
+        --input "${{ matrix.input }}"
+        --output "${{ matrix.output }}"
+        --kind "${{ matrix.kind }}"
+        "--warmup=${{ inputs.warmup }}"
+        "--repeat=${{ inputs.repeat }}"
+        --worker-timeout-seconds=120
+    - id: timing-deadline
+      if: "${{ steps.benchmark.outputs.timed_out }}"
+      environment: runtime
+      run: "echo 'Function or worker deadline exceeded' >&2; exit 1"
+      failure-status: time_limit_exceeded
+    - id: correctness
+      uses: builtin/numeric-diff
+      secret: true
+      failure-status: wrong_answer
+      with:
+        actual: "${{ matrix.output }}"
+        expected: "${{ matrix.reference }}"
+        metric: allclose
+        tolerance: 1.0e-5
+        relative-tolerance: 1.0e-4
+        require-same-count: true
+    - id: score-transform
+      environment: runtime
+      run: >-
+        python3 judge/score_transform.py
+        --kind "${{ matrix.kind }}"
+        --runtime-ms "${{ steps.benchmark.outputs.runtime_ms }}"
+        --full-time-ms "${{ matrix.full_time_ms }}"
+        --max-time-ms "${{ matrix.max_time_ms }}"
+      failure-status: invalid_output
+
+  result:
+    metrics:
+      performance:
+        value: "${{ steps.benchmark.outputs.runtime_ms }}"
+        samples: "${{ steps.benchmark.outputs.samples }}"
+        unit: ms
+        aggregation: max
+        objective: minimize
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps['score-transform'].outputs.score_value }}"
+        full-at: 1
+        zero-at: 2

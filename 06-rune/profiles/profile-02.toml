@@ -1,0 +1,102 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-02"
+initial_tasks = [
+  { id = "batch-0", task_type = "Batch" },
+  { id = "batch-1", task_type = "Batch" },
+  { id = "bg-0", task_type = "Background" },
+]
+
+[[releases]]
+id = "wave-a"
+task_type = "Batch"
+at = { min = 40, max = 70 }
+count = { min = 16, max = 20 }
+
+[[releases]]
+id = "wave-b"
+task_type = "Batch"
+at = { min = 120, max = 160 }
+count = { min = 24, max = 30 }
+
+[[releases]]
+id = "wave-c"
+task_type = "Batch"
+at = { min = 220, max = 270 }
+count = { min = 16, max = 20 }
+
+[[workflow_templates]]
+id = "background"
+instances = { min = 20, max = 24 }
+nodes = [
+  { id = "bg", task_type = "Background" },
+]
+
+[safety_limits]
+max_generated_tasks = 1024
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "Batch"
+runtime_work = { min = 30, max = 50 }
+setup_work = 400
+cpu_demand = 3
+memory_reservation = 3
+
+[[task_types]]
+id = "Background"
+runtime_work = { min = 180, max = 250 }
+setup_work = 20
+cpu_demand = 6
+memory_reservation = 6
+
+[[task_types]]
+id = "SetupTail"
+runtime_work = { min = 70, max = 110 }
+setup_work = 180
+cpu_demand = 4
+memory_reservation = 4
+required_capabilities = ["tail"]
+
+[[derivations]]
+id = "batch-tail"
+parent_type = "Batch"
+successor_type = "SetupTail"
+fanout = { min = 1, max = 1 }
+
+[[workers]]
+id = "worker-0-batch-fast"
+cpu_capacity = 24
+memory_capacity = 24
+duration_multipliers = [
+  { task_type = "Batch", ratio = { numerator = 1, denominator = 5 } },
+]
+
+[[workers]]
+id = "worker-1-batch-slow"
+cpu_capacity = 18
+memory_capacity = 24
+duration_multipliers = [
+  { task_type = "Batch", ratio = { numerator = 3, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-2-background"
+cpu_capacity = 20
+memory_capacity = 24
+duration_multipliers = [
+  { task_type = "Background", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "Batch", ratio = { numerator = 5, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-3-tail"
+cpu_capacity = 16
+memory_capacity = 20
+capabilities = ["tail"]
+duration_multipliers = [
+  { task_type = "SetupTail", ratio = { numerator = 1, denominator = 3 } },
+]

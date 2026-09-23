@@ -1,0 +1,91 @@
+version: hellohpc/v0.4.0
+
+problem:
+  id: ragged-softmax-moments
+  title: Ragged Softmax Moments
+
+# The public workflow is intentionally independent from the trusted private
+# judge configuration. Both sides accept the same fixed editable file paths.
+workspace:
+  editable:
+    - solution/CMakeLists.txt
+    - solution/op_host/rsm_solution_host.cpp
+    - solution/op_host/rsm_solution_host.h
+    - solution/op_kernel/rsm_solution.cpp
+    - solution/op_kernel/rsm_solution_core.h
+    - solution/op_kernel/rsm_solution_tiling.h
+    - solution/runner/main.cpp
+  readonly:
+    - solution/build.sh
+    - solution/run.sh
+    - baseline/**
+    - scripts/**
+    - tools/**
+  exclude:
+    - "**/README.md"
+    - "**/__pycache__/**"
+    - "**/*.pyc"
+
+workflow:
+  setup:
+    - id: evaluate
+      name: Run the evaluation once
+      run: >-
+        python3 -u scripts/hellohpc_adapter.py evaluate
+        --profile public
+      timeout: 15m
+      timeout-status: infrastructure_error
+      failure-status: infrastructure_error
+
+  matrix:
+    id: [performance]
+    score: [100]
+
+  steps:
+    - id: infrastructure_guard
+      name: Propagate evaluation infrastructure failures
+      if: "${{ steps.evaluate.outputs.evaluation_category == 'infrastructure_error' }}"
+      run: >-
+        python3 scripts/hellohpc_adapter.py guard
+        --category "${{ steps.evaluate.outputs.evaluation_category }}"
+        --phase "${{ steps.evaluate.outputs.phase }}"
+        --reason "${{ steps.evaluate.outputs.reason }}"
+      failure-status: infrastructure_error
+
+    - id: invalid_submission_guard
+      name: Reject invalid submissions
+      if: "${{ steps.evaluate.outputs.evaluation_category == 'invalid_submission' }}"
+      run: >-
+        python3 scripts/hellohpc_adapter.py guard
+        --category "${{ steps.evaluate.outputs.evaluation_category }}"
+        --phase "${{ steps.evaluate.outputs.phase }}"
+        --reason "${{ steps.evaluate.outputs.reason }}"
+      failure-status: wrong_answer
+
+    - id: stage_score
+      name: Export development performance
+      run: >-
+        python3 scripts/hellohpc_adapter.py stage
+        --profile public
+        --eligible "${{ steps.evaluate.outputs.submission_eligible }}"
+        --performance "${{ steps.evaluate.outputs.performance }}"
+
+  finally:
+    - id: publish_reports
+      name: Publish evaluation reports
+      run: python3 scripts/publish_reports.py --profile public
+      timeout: 30s
+      failure-status: infrastructure_error
+
+  result:
+    metrics:
+      performance:
+        value: "${{ steps.stage_score.outputs.performance }}"
+        unit: ratio
+        objective: maximize
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.stage_score.outputs.score_value }}"
+        full-at: 1
+        zero-at: 2

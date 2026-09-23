@@ -1,0 +1,176 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-14"
+initial_tasks = [
+  { id = "seed-short-0", task_type = "ShortRisk" },
+  { id = "seed-long-0", task_type = "LongStable" },
+]
+
+[[releases]]
+id = "setup-wave-small"
+task_type = "SetupBatch"
+at = { min = 40, max = 80 }
+count = { min = 6, max = 10 }
+
+[[releases]]
+id = "setup-wave-large"
+task_type = "SetupBatch"
+at = { min = 110, max = 170 }
+count = { min = 18, max = 24 }
+
+[[releases]]
+id = "late-background"
+task_type = "Flexible"
+at = { min = 220, max = 300 }
+count = { min = 16, max = 22 }
+
+[[workflow_templates]]
+id = "critical"
+instances = { min = 10, max = 14 }
+nodes = [
+  { id = "left", task_type = "FastBranch" },
+  { id = "right", task_type = "StableBranch" },
+  { id = "gate", task_type = "Gate", depends_on = ["left", "right"] },
+  { id = "fan-a", task_type = "TailCpu", depends_on = ["gate"] },
+  { id = "fan-b", task_type = "TailMemory", depends_on = ["gate"] },
+  { id = "final", task_type = "Final", depends_on = ["fan-a", "fan-b"] },
+]
+
+[safety_limits]
+max_generated_tasks = 1024
+max_batch_size = 6
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "ShortRisk"
+runtime_work = { min = 30, max = 50 }
+setup_work = 15
+cpu_demand = 4
+memory_reservation = 4
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 5 }, max_failures = 1, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 2, denominator = 3 } } }
+
+[[task_types]]
+id = "LongStable"
+runtime_work = { min = 220, max = 300 }
+setup_work = 25
+cpu_demand = 7
+memory_reservation = 7
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 4 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 2 }, max = { numerator = 3, denominator = 4 } } }
+
+[[task_types]]
+id = "SetupBatch"
+runtime_work = { min = 35, max = 60 }
+setup_work = 280
+cpu_demand = 3
+memory_reservation = 3
+
+[[task_types]]
+id = "Flexible"
+runtime_work = { min = 80, max = 120 }
+setup_work = 15
+cpu_demand = 4
+memory_reservation = 5
+
+[[task_types]]
+id = "FastBranch"
+runtime_work = { min = 110, max = 160 }
+setup_work = 30
+cpu_demand = 7
+memory_reservation = 5
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 4 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 2 }, max = { numerator = 3, denominator = 4 } } }
+
+[[task_types]]
+id = "StableBranch"
+runtime_work = { min = 160, max = 220 }
+setup_work = 30
+cpu_demand = 5
+memory_reservation = 8
+
+[[task_types]]
+id = "Gate"
+runtime_work = { min = 40, max = 65 }
+setup_work = 70
+cpu_demand = 4
+memory_reservation = 6
+required_capabilities = ["gate"]
+
+[[task_types]]
+id = "TailCpu"
+runtime_work = { min = 130, max = 190 }
+setup_work = 45
+cpu_demand = 10
+memory_reservation = 3
+
+[[task_types]]
+id = "TailMemory"
+runtime_work = { min = 140, max = 200 }
+setup_work = 45
+cpu_demand = 3
+memory_reservation = 12
+required_capabilities = ["memory"]
+
+[[task_types]]
+id = "Final"
+runtime_work = { min = 180, max = 250 }
+setup_work = 90
+cpu_demand = 7
+memory_reservation = 8
+required_capabilities = ["final"]
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 3 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 2 }, max = { numerator = 3, denominator = 4 } } }
+
+[[workers]]
+id = "worker-0-fast-risky"
+cpu_capacity = 22
+memory_capacity = 24
+capabilities = ["gate", "memory", "final"]
+duration_multipliers = [
+  { task_type = "ShortRisk", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "LongStable", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "FastBranch", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "StableBranch", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Gate", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Final", ratio = { numerator = 1, denominator = 4 } },
+]
+outage_prior = { count = { min = 4, max = 5 }, initial_delay = { min = 80, max = 120 }, uptime = { min = 160, max = 220 }, duration = { min = 90, max = 140 } }
+
+[[workers]]
+id = "worker-1-reliable"
+cpu_capacity = 18
+memory_capacity = 24
+capabilities = ["gate", "final"]
+duration_multipliers = [
+  { task_type = "LongStable", ratio = { numerator = 3, denominator = 4 } },
+  { task_type = "StableBranch", ratio = { numerator = 3, denominator = 4 } },
+  { task_type = "Final", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-memory"
+cpu_capacity = 14
+memory_capacity = 32
+capabilities = ["memory", "final"]
+duration_multipliers = [
+  { task_type = "TailMemory", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "StableBranch", ratio = { numerator = 2, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-3-cpu"
+cpu_capacity = 24
+memory_capacity = 16
+capabilities = ["gate"]
+duration_multipliers = [
+  { task_type = "TailCpu", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "FastBranch", ratio = { numerator = 1, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-4-batch"
+cpu_capacity = 20
+memory_capacity = 24
+duration_multipliers = [
+  { task_type = "SetupBatch", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Flexible", ratio = { numerator = 3, denominator = 4 } },
+]

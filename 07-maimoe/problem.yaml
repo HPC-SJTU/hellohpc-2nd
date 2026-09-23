@@ -1,0 +1,154 @@
+version: hellohpc/v0.3.0
+
+problem:
+  id: maimoe
+  title: MaiMoe
+
+workspace:
+  editable:
+    - solution/Kernel.cpp
+    - solution/KstroParam.toml
+  readonly:
+    - CMakeLists.txt
+    - README.md
+    - include/**
+    - src/**
+    - tools/**
+  exclude:
+    - "**/__pycache__/**"
+    - "**/*.pyc"
+
+inputs:
+  warmup:
+    type: integer
+    default: 1
+    min: 0
+    max: 5
+  repeat:
+    type: integer
+    default: 3
+    min: 1
+    max: 10
+  timeout_seconds:
+    type: integer
+    default: 240
+    min: 1
+    max: 240
+
+workflow:
+  working-directory: .
+
+  environments:
+    compiler:
+      shell: [bash, -l]
+      run: |
+        command -v cmake >/dev/null 2>&1
+        command -v c++ >/dev/null 2>&1
+        command -v python3 >/dev/null 2>&1
+
+  setup:
+    - id: cpus
+      uses: builtin/cpu-set
+      failure-status: infrastructure_error
+      with:
+        count: 8
+
+    - id: compile
+      environment: compiler
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --target maimoe maimoe_kernel maimoe_check -j
+      failure-status: compile_error
+
+  matrix:
+    id: ["1", "2", "3", "4"]
+    score: [10, 20, 20, 50]
+    dataset:
+      - Data/Sample1/input
+      - Data/Sample2/input
+      - Data/Sample3/input
+      - Data/Sample4/input
+    expected:
+      - Data/Sample1/expected.bin
+      - Data/Sample2/expected.bin
+      - Data/Sample3/expected.bin
+      - Data/Sample4/expected.bin
+    full_time_ms: [100, 160, 165, 650]
+    base_time_ms: [400, 2333, 2333, 11451]
+    workspace:
+      - readonly: [{path: Data/Sample1/**, required: false}]
+      - readonly: [{path: Data/Sample2/**, required: false}]
+      - readonly: [{path: Data/Sample3/**, required: false}]
+      - readonly: [{path: Data/Sample4/**, required: false}]
+
+  steps:
+    - id: benchmark
+      environment: compiler
+      uses: builtin/run
+      timeout: 20m
+      failure-status: infrastructure_error
+      timeout-status: infrastructure_error
+      with:
+        command:
+          - python3
+          - src/judge/run_benchmark.py
+          - --executable
+          - ./build/maimoe
+          - --checker
+          - ./build/maimoe_check
+          - --dataset
+          - "${{ matrix.dataset }}"
+          - --expected
+          - "${{ matrix.expected }}"
+          - --output-root
+          - .maimoe-output/benchmark
+          - --result-file
+          - .maimoe-benchmark-result.json
+          - --cpus
+          - "${{ steps.cpus.outputs.list }}"
+          - "--warmup=${{ inputs.warmup }}"
+          - "--repeat=${{ inputs.repeat }}"
+          - "--timeout-seconds=${{ inputs.timeout_seconds }}"
+          - --hellohpc-soft-fail
+
+    - id: benchmark_result
+      environment: compiler
+      run: cp .maimoe-benchmark-result.json "$HELLOHPC_OUTPUT"
+      failure-status: infrastructure_error
+
+    - id: score_transform
+      environment: compiler
+      run: python3 src/judge/score_curve.py --result .maimoe-benchmark-result.json --full "${{ matrix.full_time_ms }}" --base "${{ matrix.base_time_ms }}"
+      failure-status: infrastructure_error
+
+    - id: candidate_timeout
+      if: "${{ steps.benchmark_result.outputs.status == 'time_limit_exceeded' }}"
+      run: exit 1
+      failure-status: time_limit_exceeded
+
+    - id: candidate_failure
+      if: "${{ steps.benchmark_result.outputs.status == 'runtime_error' }}"
+      run: exit 1
+      failure-status: runtime_error
+
+    - id: checker_failure
+      if: "${{ steps.benchmark_result.outputs.status == 'wrong_answer' }}"
+      run: exit 1
+      failure-status: wrong_answer
+
+    - id: harness_failure
+      if: "${{ steps.benchmark_result.outputs.status == 'infrastructure_error' }}"
+      run: exit 1
+      failure-status: infrastructure_error
+
+  result:
+    metrics:
+      performance:
+        value: "${{ steps.benchmark_result.metrics['wall-time'].value }}"
+        samples: "${{ steps.benchmark_result.metrics['wall-time'].samples }}"
+        unit: ms
+        aggregation: mean
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.score_transform.metrics['curve-value'].value }}"
+        full-at: 1
+        zero-at: 2

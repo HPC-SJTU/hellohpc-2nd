@@ -1,0 +1,114 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "build",
+  "share": "disabled",
+  "autoupdate": false,
+  "subagent_depth": 0,
+  "skills": {
+    "paths": [
+      ".opencode/skills"
+    ]
+  },
+  "tool_output": {
+    "max_lines": 300,
+    "max_bytes": 16384
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "tail_turns": 2
+  },
+  "agent": {
+    "title": {
+      "disable": true
+    },
+    "build": {
+      "model": "sjtu/qwen3.8-27b",
+      "steps": 16,
+      "temperature": 0,
+      "permission": {
+        "*": "deny",
+        "read": "allow",
+        "edit": {
+          "*": "deny",
+          "kernel.cpp": "allow",
+          "compile_options.txt": "allow"
+        },
+        "bash": {
+          "*": "deny",
+          "bash tools/build.sh": "allow",
+          "bash tools/test_candidate.sh": "allow",
+          "bash tools/profile.sh": "allow",
+          "bash tools/vec_report.sh": "allow",
+          "bash ./tools/build.sh": "allow",
+          "bash ./tools/test_candidate.sh": "allow",
+          "bash ./tools/profile.sh": "allow",
+          "bash ./tools/vec_report.sh": "allow",
+          "tools/build.sh": "allow",
+          "tools/profile.sh": "allow",
+          "tools/vec_report.sh": "allow",
+          "./tools/build.sh": "allow",
+          "./tools/profile.sh": "allow",
+          "./tools/vec_report.sh": "allow"
+        },
+        "skill": {
+          "*": "deny",
+          "cpu-hpc-skill": "allow"
+        },
+        "task": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "external_directory": "deny",
+        "doom_loop": "deny",
+        "question": "deny"
+      },
+      "prompt": "You are optimizing one CPU kernel inside a restricted evaluator. Follow the task interface and these environment rules.\n\nTOOLS AND WORKSPACE\n- Load cpu-hpc-skill using the skill tool.\n- Use read for workspace files and directory listings. Only kernel.cpp and compile_options.txt are editable; use write or edit with the tool's required arguments.\n- Bash accepts only these commands: bash tools/test_candidate.sh, bash tools/build.sh, bash tools/profile.sh, and bash tools/vec_report.sh. Use a 600000 ms timeout for test_candidate.sh. Do not add shell operators or other commands.\n- The task message supplies the interface, correctness requirements and initial source. kernel.h is available; harness sources, reference implementations and spec.yaml are not accessible. Stay within the workspace.\n\nEXECUTION ENVIRONMENT\n- The kernel is an AArch64 PIC shared object compiled with -nostartfiles. Export the C-linkage symbol declared in kernel.h. Avoid static or namespace-scope objects requiring dynamic initialization, constructors, destructors or exit-time cleanup; plain POD constants and arrays are allowed.\n- The restricted loader rejects init/fini sections, text relocations, IFUNC relocations and unapproved shared-library dependencies.\n- Kernel execution has no filesystem, network, IPC, process/thread creation, signal/timer, affinity or perf access. Follow the task's memory-allocation restrictions.\n\nBUDGET AND SUBMISSION\n- Optimization allows at most 16 model rounds and 20 minutes, followed by a separate finalization phase of at most 4 rounds and 10 minutes.\n- Each model response consumes a round, including reads, rejected tool calls and text-only responses. The last round may have no tools. A text-only answer does not end optimization early; the evaluator may ask you to continue within the remaining budget.\n- The evaluator sends a separate finalization message with submission instructions. Only the final kernel.cpp and compile_options.txt files are scored; code in a reply does not modify them. Compilation failure earns zero; failing sizes earn zero.\n"
+    }
+  },
+  "provider": {
+    "sjtu": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "SJTU",
+      "options": {
+        "baseURL": "{env:CHEATSHEET_MODEL_BASE_URL}",
+        "apiKey": "{env:SJTU_API_KEY}",
+        "timeout": 900000,
+        "headerTimeout": 750000,
+        "chunkTimeout": 360000
+      },
+      "models": {
+        "qwen3.8-27b": {
+          "name": "Qwen3.8-27B",
+          "temperature": true,
+          "reasoning": true,
+          "options": {
+            "reasoningEffort": "medium",
+            "chat_template_kwargs": {
+              "enable_thinking": true,
+              "reasoning_effort": "medium"
+            }
+          },
+          "limit": {
+            "context": 250000,
+            "output": 32768
+          }
+        },
+        "deepseek-reasoner": {
+          "name": "DeepSeek V4 Flash",
+          "temperature": true,
+          "reasoning": true,
+          "options": {
+            "reasoningEffort": "medium",
+            "thinking": {
+              "type": "enabled"
+            }
+          },
+          "limit": {
+            "context": 250000,
+            "output": 32768
+          }
+        }
+      }
+    }
+  }
+}

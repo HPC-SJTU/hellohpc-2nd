@@ -1,0 +1,49 @@
+{
+  "accuracy_reference": {
+    "correct": 1275,
+    "evidence": "reference calibration 2026-09-10",
+    "protocol": "gsm8k-test-nonthinking-final-v1",
+    "status": "validated",
+    "total": 1319
+  },
+  "files": {
+    "d1": {
+      "path": "d1.jsonl",
+      "records": 80,
+      "sha256": "24ffb33446ceef00f821333a60b919d75d292fd864a217a28cfe798f76e46db3"
+    },
+    "d2": {
+      "path": "d2.jsonl",
+      "records": 24,
+      "sha256": "8f7cecc8a1a5d86cd05e07a317c54c14e2710331e9e09540cff286bcc24691e9"
+    },
+    "gsm": {
+      "path": "gsm.jsonl",
+      "records": 1319,
+      "sha256": "20da940e54d6b2160e901edc9c0368c4d76a13810a6ec31b2411843f8bfad637"
+    },
+    "provenance": {
+      "path": "provenance.jsonl",
+      "records": 1329,
+      "sha256": "4520f273b0164395b375deeeb6b19cb65533029a8fc68b827f17798c3e1492d9"
+    }
+  },
+  "model_id": "Eco-Tech/DeepSeek-V4-Flash-0731-w8a8",
+  "model_revision": "3977f56e21184c1fd542b34cb4f07e4ca45be498",
+  "protocol": "dpsk-stage2-v2",
+  "schema_version": 2,
+  "split": "public",
+  "tokenizer": {
+    "chat_template_sha256": "7c235b992a891becb1ae69b1a3f30775a5753f9bcba959d8e2dd5a8a658ba9bc",
+    "digest": "91a4aebc9368f9286aef7b0d21d326965231b5fb5aebe28b10fd92849324708e",
+    "files_sha256": {
+      "deepseek_v4.py": "b710debe021e80cbc9935ca37a11df9133bbc50f2d4807470d2de372f0054e20",
+      "deepseek_v4_encoding.py": "20eb61abe97be7607fd12e2b929faef91743cd2699ad9a4e032b54237d137694",
+      "tokenizer.json": "8f9f37ca37fdc4f5fd36d5cf4d3b0e8392edb4e894fd10cc0d70b4957c8633cf",
+      "tokenizer_config.json": "6ac8c8dc065ed118161d02dd532749ae3f52c243deac27872134fae2f50d8547"
+    },
+    "gsm_template_verified": true,
+    "id": "Eco-Tech/DeepSeek-V4-Flash-0731-w8a8",
+    "revision": "3977f56e21184c1fd542b34cb4f07e4ca45be498"
+  }
+}

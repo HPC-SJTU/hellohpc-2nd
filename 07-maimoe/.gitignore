@@ -1,0 +1,16 @@
+/build*/
+/.hellohpc/
+/.vs/
+/out/
+/out-*/
+/.eval/
+/*.mmo
+/*.tmp
+/data/
+/Data/
+/.auto-eval/
+*.user
+*.suo
+__pycache__/
+*.pyc
+/data-test/

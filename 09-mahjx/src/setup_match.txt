@@ -1,0 +1,70 @@
+RESULT_DIR	match_result
+GAME	0	0	1	E	1	4	0	0	25000	25000	25000	25000
+TACTIC	0	turn_pt	4	90	30	-30	-90
+TACTIC	0	hand_change_count	7	2	2	1	1	0	0	0
+TACTIC	0	consider_kan	1	1
+TACTIC	0	do_nine_terminals	1	1
+TACTIC	0	win_coeff_tp_fnm	1	0
+TACTIC	0	win_coeff_tp_an	1	8
+TACTIC	0	other_end_ar	1	0
+TACTIC	0	tenpai_after_est_begin	1	0
+TACTIC	0	fold_exp_at_dp_open_meld	1	1
+TACTIC	0	inclusive_shanten_num_always	1	1
+TACTIC	0	inclusive_shanten_num_other_riichi	1	2
+TACTIC	0	inclusive_shanten_num_open_meld	1	1
+TACTIC	0	inclusive_shanten_num_open_meld_other_riichi	1	2
+TACTIC	0	max_open_meld_num	1	3
+TACTIC	0	han_shift_prob_kan	14	0.1	0.8	0.1	0	0	0	0	0	0	0	0	0	0	0
+TACTIC	0	hanfu_weight_tsumo	10	3	3	3	0.4	4	3	0.5	6	3	0.1
+TACTIC	0	hanfu_weight_ron	10	3	2	3	0.1	3	3	0.5	4	3	0.4
+TACTIC	1	turn_pt	4	90	30	-30	-90
+TACTIC	1	hand_change_count	7	2	2	1	1	0	0	0
+TACTIC	1	consider_kan	1	1
+TACTIC	1	do_nine_terminals	1	1
+TACTIC	1	win_coeff_tp_fnm	1	0
+TACTIC	1	win_coeff_tp_an	1	8
+TACTIC	1	other_end_ar	1	0
+TACTIC	1	tenpai_after_est_begin	1	0
+TACTIC	1	fold_exp_at_dp_open_meld	1	1
+TACTIC	1	inclusive_shanten_num_always	1	1
+TACTIC	1	inclusive_shanten_num_other_riichi	1	2
+TACTIC	1	inclusive_shanten_num_open_meld	1	1
+TACTIC	1	inclusive_shanten_num_open_meld_other_riichi	1	2
+TACTIC	1	max_open_meld_num	1	3
+TACTIC	1	han_shift_prob_kan	14	0.1	0.8	0.1	0	0	0	0	0	0	0	0	0	0	0
+TACTIC	1	hanfu_weight_tsumo	10	3	3	3	0.4	4	3	0.5	6	3	0.1
+TACTIC	1	hanfu_weight_ron	10	3	2	3	0.1	3	3	0.5	4	3	0.4
+TACTIC	2	turn_pt	4	90	30	-30	-90
+TACTIC	2	hand_change_count	7	2	2	1	1	0	0	0
+TACTIC	2	consider_kan	1	1
+TACTIC	2	do_nine_terminals	1	1
+TACTIC	2	win_coeff_tp_fnm	1	0
+TACTIC	2	win_coeff_tp_an	1	8
+TACTIC	2	other_end_ar	1	0
+TACTIC	2	tenpai_after_est_begin	1	0
+TACTIC	2	fold_exp_at_dp_open_meld	1	1
+TACTIC	2	inclusive_shanten_num_always	1	1
+TACTIC	2	inclusive_shanten_num_other_riichi	1	2
+TACTIC	2	inclusive_shanten_num_open_meld	1	1
+TACTIC	2	inclusive_shanten_num_open_meld_other_riichi	1	2
+TACTIC	2	max_open_meld_num	1	3
+TACTIC	2	han_shift_prob_kan	14	0.1	0.8	0.1	0	0	0	0	0	0	0	0	0	0	0
+TACTIC	2	hanfu_weight_tsumo	10	3	3	3	0.4	4	3	0.5	6	3	0.1
+TACTIC	2	hanfu_weight_ron	10	3	2	3	0.1	3	3	0.5	4	3	0.4
+TACTIC	3	turn_pt	4	90	30	-30	-90
+TACTIC	3	hand_change_count	7	2	2	1	1	0	0	0
+TACTIC	3	consider_kan	1	1
+TACTIC	3	do_nine_terminals	1	1
+TACTIC	3	win_coeff_tp_fnm	1	0
+TACTIC	3	win_coeff_tp_an	1	8
+TACTIC	3	other_end_ar	1	0
+TACTIC	3	tenpai_after_est_begin	1	0
+TACTIC	3	fold_exp_at_dp_open_meld	1	1
+TACTIC	3	inclusive_shanten_num_always	1	1
+TACTIC	3	inclusive_shanten_num_other_riichi	1	2
+TACTIC	3	inclusive_shanten_num_open_meld	1	1
+TACTIC	3	inclusive_shanten_num_open_meld_other_riichi	1	2
+TACTIC	3	max_open_meld_num	1	3
+TACTIC	3	han_shift_prob_kan	14	0.1	0.8	0.1	0	0	0	0	0	0	0	0	0	0	0
+TACTIC	3	hanfu_weight_tsumo	10	3	3	3	0.4	4	3	0.5	6	3	0.1
+TACTIC	3	hanfu_weight_ron	10	3	2	3	0.1	3	3	0.5	4	3	0.4

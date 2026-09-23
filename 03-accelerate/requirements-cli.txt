@@ -1,0 +1,4 @@
+# Optional CLI self-test dependencies; benchmark.py only needs requirements.txt.
+-r requirements.txt
+hellohpc==0.4.0
+rich>=13.0

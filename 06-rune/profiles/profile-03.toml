@@ -1,0 +1,96 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-03"
+initial_tasks = [
+  { id = "seed-filler-0", task_type = "Filler" },
+  { id = "seed-filler-1", task_type = "Filler" },
+  { id = "seed-filler-2", task_type = "Filler" },
+  { id = "seed-parent-0", task_type = "Parent" },
+]
+
+[[releases]]
+id = "filler-wave"
+task_type = "Filler"
+at = { min = 8, max = 20 }
+count = { min = 20, max = 26 }
+
+[[workflow_templates]]
+id = "parents"
+instances = { min = 12, max = 16 }
+nodes = [
+  { id = "parent", task_type = "Parent" },
+]
+
+[safety_limits]
+max_generated_tasks = 2048
+max_batch_size = 6
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 100000
+
+[[task_types]]
+id = "Parent"
+runtime_work = { min = 40, max = 70 }
+setup_work = 12
+cpu_demand = 2
+memory_reservation = 2
+required_capabilities = ["parent"]
+
+[[task_types]]
+id = "ScarceLeaf"
+runtime_work = { min = 200, max = 280 }
+setup_work = 25
+cpu_demand = 8
+memory_reservation = 8
+required_capabilities = ["scarce"]
+
+[[task_types]]
+id = "Filler"
+runtime_work = { min = 280, max = 360 }
+setup_work = 20
+cpu_demand = 4
+memory_reservation = 20
+required_capabilities = ["fill"]
+
+[[derivations]]
+id = "parent-scarce"
+parent_type = "Parent"
+successor_type = "ScarceLeaf"
+fanout = { min = 8, max = 10 }
+
+[[workers]]
+id = "worker-0-scarce"
+cpu_capacity = 16
+memory_capacity = 24
+capabilities = ["scarce", "fill"]
+duration_multipliers = [
+  { task_type = "ScarceLeaf", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "Filler", ratio = { numerator = 3, denominator = 1 } },
+]
+
+[[workers]]
+id = "worker-1-parent"
+cpu_capacity = 18
+memory_capacity = 16
+capabilities = ["parent"]
+duration_multipliers = [
+  { task_type = "Parent", ratio = { numerator = 1, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-2-filler"
+cpu_capacity = 20
+memory_capacity = 40
+capabilities = ["fill"]
+duration_multipliers = [
+  { task_type = "Filler", ratio = { numerator = 1, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-3-filler-b"
+cpu_capacity = 20
+memory_capacity = 40
+capabilities = ["fill"]
+duration_multipliers = [
+  { task_type = "Filler", ratio = { numerator = 3, denominator = 4 } },
+]

@@ -1,0 +1,114 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-04"
+initial_tasks = [
+  { id = "seed-small-0", task_type = "Small" },
+  { id = "seed-small-1", task_type = "Small" },
+  { id = "seed-small-2", task_type = "Small" },
+]
+
+[[releases]]
+id = "filler-wave"
+task_type = "Small"
+at = { min = 8, max = 24 }
+count = { min = 24, max = 30 }
+
+[[releases]]
+id = "late-medium"
+task_type = "Medium"
+at = { min = 180, max = 220 }
+count = { min = 10, max = 14 }
+
+[[workflow_templates]]
+id = "producer"
+instances = { min = 24, max = 30 }
+nodes = [
+  { id = "root", task_type = "Producer" },
+]
+
+[safety_limits]
+max_generated_tasks = 1024
+max_batch_size = 6
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "Small"
+runtime_work = { min = 200, max = 280 }
+setup_work = 15
+cpu_demand = 3
+memory_reservation = 8
+
+[[task_types]]
+id = "Medium"
+runtime_work = { min = 90, max = 130 }
+setup_work = 20
+cpu_demand = 4
+memory_reservation = 6
+required_capabilities = ["general"]
+
+[[task_types]]
+id = "Producer"
+runtime_work = { min = 30, max = 50 }
+setup_work = 8
+cpu_demand = 2
+memory_reservation = 4
+required_capabilities = ["general"]
+
+[[task_types]]
+id = "Large"
+runtime_work = { min = 160, max = 220 }
+setup_work = 80
+cpu_demand = 5
+memory_reservation = 10
+required_capabilities = ["large"]
+
+[[derivations]]
+id = "producer-large"
+parent_type = "Producer"
+successor_type = "Large"
+fanout = { min = 1, max = 2 }
+
+[[workers]]
+id = "worker-0-large-fast"
+cpu_capacity = 16
+memory_capacity = 24
+capabilities = ["large"]
+duration_multipliers = [
+  { task_type = "Large", ratio = { numerator = 1, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-1-general"
+cpu_capacity = 14
+memory_capacity = 22
+duration_multipliers = [
+  { task_type = "Medium", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-producer"
+cpu_capacity = 18
+memory_capacity = 16
+capabilities = ["general"]
+duration_multipliers = [
+  { task_type = "Producer", ratio = { numerator = 1, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-3-medium"
+cpu_capacity = 16
+memory_capacity = 12
+capabilities = ["general"]
+duration_multipliers = [
+  { task_type = "Medium", ratio = { numerator = 1, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-4-small"
+cpu_capacity = 20
+memory_capacity = 40
+duration_multipliers = [
+  { task_type = "Small", ratio = { numerator = 1, denominator = 3 } },
+]

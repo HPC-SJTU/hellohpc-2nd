@@ -1,0 +1,190 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-17"
+initial_tasks = [
+  { id = "seed-deep-0", task_type = "DeepRoot" },
+  { id = "seed-wide-0", task_type = "WideRoot" },
+]
+
+[[releases]]
+id = "wide-wave"
+task_type = "WideRoot"
+at = { min = 80, max = 140 }
+count = { min = 4, max = 6 }
+
+[[releases]]
+id = "late-cpu"
+task_type = "WideCpu"
+at = { min = 260, max = 360 }
+count = { min = 10, max = 14 }
+
+[[workflow_templates]]
+id = "deep"
+instances = { min = 6, max = 8 }
+nodes = [
+  { id = "root", task_type = "DeepRoot" },
+]
+
+[safety_limits]
+max_generated_tasks = 4096
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 16384
+max_decisions = 100000
+
+[[task_types]]
+id = "DeepRoot"
+runtime_work = { min = 30, max = 55 }
+setup_work = 12
+cpu_demand = 2
+memory_reservation = 2
+
+[[task_types]]
+id = "DeepA"
+runtime_work = { min = 70, max = 110 }
+setup_work = 70
+cpu_demand = 4
+memory_reservation = 3
+
+[[task_types]]
+id = "DeepB"
+runtime_work = { min = 110, max = 170 }
+setup_work = 40
+cpu_demand = 5
+memory_reservation = 8
+required_capabilities = ["scarce"]
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 6 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 3, denominator = 4 } } }
+
+[[task_types]]
+id = "DeepC"
+runtime_work = { min = 80, max = 130 }
+setup_work = 90
+cpu_demand = 6
+memory_reservation = 3
+
+[[task_types]]
+id = "DeepLeaf"
+runtime_work = { min = 90, max = 140 }
+setup_work = 50
+cpu_demand = 4
+memory_reservation = 5
+
+[[task_types]]
+id = "WideRoot"
+runtime_work = { min = 25, max = 45 }
+setup_work = 10
+cpu_demand = 2
+memory_reservation = 2
+
+[[task_types]]
+id = "WideBatch"
+runtime_work = { min = 40, max = 70 }
+setup_work = 180
+cpu_demand = 3
+memory_reservation = 3
+
+[[task_types]]
+id = "WideMemory"
+runtime_work = { min = 80, max = 130 }
+setup_work = 25
+cpu_demand = 3
+memory_reservation = 10
+
+[[task_types]]
+id = "WideCpu"
+runtime_work = { min = 70, max = 120 }
+setup_work = 30
+cpu_demand = 8
+memory_reservation = 3
+
+[[derivations]]
+id = "deep-root-a"
+parent_type = "DeepRoot"
+successor_type = "DeepA"
+fanout = { min = 3, max = 3 }
+
+[[derivations]]
+id = "deep-a-b"
+parent_type = "DeepA"
+successor_type = "DeepB"
+fanout = { min = 2, max = 2 }
+
+[[derivations]]
+id = "deep-b-c"
+parent_type = "DeepB"
+successor_type = "DeepC"
+fanout = { min = 2, max = 2 }
+
+[[derivations]]
+id = "deep-c-leaf"
+parent_type = "DeepC"
+successor_type = "DeepLeaf"
+fanout = { min = 2, max = 2 }
+
+[[derivations]]
+id = "wide-root-batch"
+parent_type = "WideRoot"
+successor_type = "WideBatch"
+fanout = { min = 6, max = 8 }
+
+[[derivations]]
+id = "wide-batch-memory"
+parent_type = "WideBatch"
+successor_type = "WideMemory"
+fanout = { min = 2, max = 3 }
+
+[[derivations]]
+id = "wide-batch-cpu"
+parent_type = "WideBatch"
+successor_type = "WideCpu"
+fanout = { min = 2, max = 3 }
+
+[[workers]]
+id = "worker-0-scarce-risky"
+cpu_capacity = 20
+memory_capacity = 26
+capabilities = ["scarce"]
+duration_multipliers = [
+  { task_type = "DeepB", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "WideBatch", ratio = { numerator = 3, denominator = 2 } },
+]
+outage_prior = { count = { min = 3, max = 4 }, initial_delay = { min = 140, max = 200 }, uptime = { min = 220, max = 300 }, duration = { min = 80, max = 130 } }
+
+[[workers]]
+id = "worker-1-deep"
+cpu_capacity = 18
+memory_capacity = 22
+capabilities = ["scarce"]
+duration_multipliers = [
+  { task_type = "DeepA", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "DeepC", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "DeepB", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-wide"
+cpu_capacity = 22
+memory_capacity = 20
+duration_multipliers = [
+  { task_type = "WideBatch", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "WideCpu", ratio = { numerator = 1, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-3-memory"
+cpu_capacity = 16
+memory_capacity = 30
+duration_multipliers = [
+  { task_type = "WideMemory", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "DeepLeaf", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-4-stable"
+cpu_capacity = 20
+memory_capacity = 24
+capabilities = ["scarce"]
+duration_multipliers = [
+  { task_type = "DeepLeaf", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "WideCpu", ratio = { numerator = 2, denominator = 3 } },
+]

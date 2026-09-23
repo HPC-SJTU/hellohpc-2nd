@@ -1,0 +1,11 @@
+ref/
+logs/
+output/
+scripts/
+docs/
+*.o
+blackhole
+blackhole-gpu
+two-puncture
+benchmark-result.txt
+result*.json

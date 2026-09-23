@@ -1,0 +1,170 @@
+version: hellohpc/v0.4.0
+
+problem:
+  id: rune-scheduling-game
+  title: Rune Deterministic Scheduling Game
+
+workspace:
+  editable:
+    - policy.py
+  readonly:
+    - run_scenario.py
+    - rune_scheduler/**/*.py
+    - profiles/*.toml
+    - bin/rune-cluster-*
+
+inputs:
+  seed_key:
+    type: string
+    default: 000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f
+    description: 64-character hexadecimal key selecting a reproducible 64-seed set
+  seed_count:
+    type: integer
+    default: 64
+    min: 1
+    max: 64
+    description: Number of deterministic seeds averaged per workload profile
+  shards:
+    type: integer
+    default: 1
+    min: 1
+    max: 32
+    description: >-
+      Number of local worker processes used to split the seed set within each
+      profile. Does not change results, only wall-clock time
+  concurrency:
+    type: integer
+    default: 16
+    min: 1
+    max: 256
+    description: >-
+      asyncio concurrency used inside each shard process when running its seed
+      slice. Does not change results; only affects wall-clock time.
+
+workflow:
+  setup:
+    - id: select-cluster-binary
+      run: >-
+        set -eu;
+        case "$(uname -m)" in
+          x86_64|amd64) binary=rune-cluster-x86 ;;
+          aarch64|arm64) binary=rune-cluster-aarch64 ;;
+          *) echo "unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+        esac;
+        cp "bin/${binary}" bin/rune-cluster;
+        chmod +x bin/rune-cluster
+      failure-status: infrastructure_error
+
+  working-directory: .
+  matrix:
+    id:
+      - profile-01
+      - profile-02
+      - profile-03
+      - profile-04
+      - profile-05
+      - profile-06
+      - profile-07
+      - profile-08
+      - profile-09
+      - profile-10
+      - profile-11
+      - profile-12
+      - profile-13
+      - profile-14
+      - profile-15
+      - profile-16
+      - profile-17
+      - profile-18
+    # Rows follow profile-01..18 order. `ref` = max(public-profile reference,
+    # judge-variant reference) as measured by the reference policy:
+    #   full_time = ref * 1.05 rounded up (>= 2000: to hundreds, else to tens)
+    #   zero_time = full_time * 1.2 rounded up to tens
+    # The reference policy therefore clears full_time on every profile, with
+    # 5-6% of headroom.
+    full_time:
+      - 1240
+      - 1760
+      - 5700
+      - 2200
+      - 940
+      - 1070
+      - 2600
+      - 1330
+      - 1370
+      - 1760
+      - 1360
+      - 1240
+      - 1340
+      - 1820
+      - 1580
+      - 1460
+      - 4000
+      - 5400
+    zero_time:
+      - 1490
+      - 2120
+      - 6850
+      - 2650
+      - 1130
+      - 1290
+      - 3130
+      - 1600
+      - 1650
+      - 2120
+      - 1640
+      - 1490
+      - 1610
+      - 2190
+      - 1900
+      - 1760
+      - 4810
+      - 6490
+    score:
+      - 30
+      - 2
+      - 1
+      - 1
+      - 1
+      - 30
+      - 30
+      - 30
+      - 2
+      - 30
+      - 30
+      - 30
+      - 5
+      - 20
+      - 30
+      - 5
+      - 30
+      - 30
+
+  steps:
+    - id: run_scenario
+      run: >-
+        python3 run_scenario.py
+        --policy policy.py
+        --profile "profiles/${{ matrix.id }}.toml"
+        --seed-key "${{ inputs.seed_key }}"
+        --seed-count "${{ inputs.seed_count }}"
+        --shards "${{ inputs.shards }}"
+        --concurrency "${{ inputs.concurrency }}"
+        --zero-time "${{ matrix.zero_time }}"
+      timeout: 60m
+      failure-status: runtime_error
+
+  result:
+    metrics:
+      candidate-makespan:
+        value: "${{ steps.run_scenario.metrics.candidate_makespan.value }}"
+        unit: logical-time
+      scenario-valid:
+        value: "${{ steps.run_scenario.metrics.scenario_valid.value }}"
+        unit: boolean
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.run_scenario.metrics.scoring_makespan.value }}"
+        full-at: "${{ matrix.full_time }}"
+        zero-at: "${{ matrix.zero_time }}"

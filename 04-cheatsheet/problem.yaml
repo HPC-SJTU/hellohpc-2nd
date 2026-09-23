@@ -1,0 +1,132 @@
+version: hellohpc/v0.4.0
+
+problem:
+  id: cheatsheet
+  title: Cheatsheet
+
+workspace:
+  editable:
+    - submission.yaml
+    - SKILL.md
+    - path: references/**
+      required: false
+  readonly:
+    - evaluate.py
+    - submit.py
+    - config.yaml
+    - src/common/**
+    - src/profiler/**
+    - src/runner/**
+    - src/scoring/**
+    - src/tasks/**
+    - src/tools/**
+    - src/worker/**
+  secret:
+    - path: .env
+      required: false
+
+workflow:
+  working-directory: .
+
+  setup:
+    # Public CLI tests prepare their own evidence directory in public_cli.
+    # Load optional local credentials only inside the steps that need them.
+    # A custom HelloHPC environment is deliberately avoided because its
+    # exported variables are snapshotted into the workspace.
+    - id: validate_runtime
+      secret: true
+      run: |
+        set -eu
+        if [ -f .env ]; then
+          set -a
+          . ./.env
+          set +a
+        fi
+        command -v python3 >/dev/null 2>&1
+        command -v bash >/dev/null 2>&1
+        command -v taskset >/dev/null 2>&1
+        command -v flock >/dev/null 2>&1
+        command -v numactl >/dev/null 2>&1
+        python3 -c 'import tokenizers'
+        python3 -c 'from src.runner.submission_surface import scoring_tokenizer; scoring_tokenizer()'
+        command -v sha256sum >/dev/null 2>&1
+        command -v git >/dev/null 2>&1
+        command -v find >/dev/null 2>&1
+        command -v bwrap >/dev/null 2>&1
+        test "${SLURM_JOB_NUM_NODES:-${SLURM_NNODES:-0}}" -eq 1
+        test "$(uname -m)" = "aarch64"
+        python3 -c 'import yaml'
+        cxx="$(python3 -c 'import yaml; print(yaml.safe_load(open("config.yaml"))["compile"]["cxx"])')"
+        test "$cxx" = "/usr/bin/g++"
+        test -x "$cxx"
+        python3 src/runner/isolation.py probe --compiler "$cxx"
+        test -n "${CHEATSHEET_OPENCODE_BIN:-}"
+        test -x "${CHEATSHEET_OPENCODE_BIN}"
+        "${CHEATSHEET_OPENCODE_BIN}" --version
+        test -n "${CHEATSHEET_RIPGREP_BIN:-}"
+        test -x "${CHEATSHEET_RIPGREP_BIN}"
+        "${CHEATSHEET_RIPGREP_BIN}" --version
+        test -n "${SJTU_API_KEY:-}"
+      failure-status: infrastructure_error
+
+    - id: cpus
+      uses: builtin/cpu-set
+      failure-status: infrastructure_error
+      with:
+        count: 2
+
+    - id: validate_submission
+      run: python3 submit.py . --repository-layout
+      failure-status: wrong_answer
+
+  matrix:
+    id: [evaluation]
+    score: 100
+
+  steps:
+    - id: evaluate
+      secret: true
+      # Two concurrent agents: up to 20 min optimization + 10 min finalization each.
+      # Allow extra time for setup, serial formal timing, and measurement retries.
+      timeout: 40m
+      failure-status: infrastructure_error
+      timeout-status: infrastructure_error
+      run: |
+        set -eu
+        if [ -f .env ]; then
+          set -a
+          . ./.env
+          set +a
+        fi
+        exec python3 -m src.runner.public_cli \
+          --skill . \
+          --out ".hellohpc/aggregate.yaml" \
+          --hellohpc-output
+
+    - id: compile_error
+      if: "${{ steps.evaluate.outputs.status == 'compile_error' }}"
+      run: exit 1
+      failure-status: compile_error
+
+    - id: runtime_error
+      if: "${{ steps.evaluate.outputs.status == 'runtime_error' }}"
+      run: exit 1
+      failure-status: runtime_error
+
+    - id: time_limit_exceeded
+      if: "${{ steps.evaluate.outputs.status == 'time_limit_exceeded' }}"
+      run: exit 1
+      failure-status: time_limit_exceeded
+
+    - id: wrong_answer
+      if: "${{ steps.evaluate.outputs.status == 'wrong_answer' }}"
+      run: exit 1
+      failure-status: wrong_answer
+
+  result:
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.evaluate.outputs.score_input }}"
+        full-at: 1
+        zero-at: 2

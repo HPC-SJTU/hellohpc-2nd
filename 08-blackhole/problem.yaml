@@ -1,0 +1,101 @@
+version: hellohpc/v0.4.0
+
+problem:
+  id: blackhole-surface
+  title: Blackhole Surface Integral
+
+workspace:
+  editable:
+    - src/**
+    - env.sh
+  exclude:
+    - src/**/*.o
+    - src/blackhole
+    - src/blackhole-gpu
+    - src/two-puncture
+
+workflow:
+  working-directory: .
+  environments:
+    contestant:
+      from: default
+      shell: [bash, -l]
+      run: |
+        set -e
+        source ./env.sh
+  setup:
+    - id: cpus
+      uses: builtin/cpu-set
+      failure-status: infrastructure_error
+      with:
+        count: 128
+        policy: first
+    - id: compile
+      environment: contestant
+      run: make -C src -j blackhole
+      failure-status: compile_error
+      timeout: 15m
+  matrix:
+    id: [small, medium, large, huge]
+    input: configs/${id}.par
+    reference: reference/${id}.expected
+    score: [10, 20, 30, 40]
+    ranks: ["32", "128", "32", "128"]
+    full_time_s: [0.15, 10.0, 20.0, 30.0]
+    zero_time_s: [200.0, 500.0, 600.0, 600.0]
+    workspace:
+      readonly: configs/${id}.par
+      secret: reference/${id}.expected
+  steps:
+    - id: benchmark
+      environment: contestant
+      uses: builtin/run
+      timeout: 630s
+      with:
+        command:
+          - taskset
+          - -c
+          - "${{ steps.cpus.outputs.list }}"
+          - mpirun
+          - -np
+          - "${{ matrix.ranks }}"
+          - --bind-to
+          - core
+          - --map-by
+          - core
+          - src/blackhole
+          - "${{ matrix.input }}"
+        capture: true
+    - id: runtime
+      uses: builtin/regex
+      failure-status: invalid_output
+      with:
+        from: "${{ steps.benchmark.outputs.stdout }}"
+        pattern: '(?m)^BLACKHOLE_TIME max=(?<value>[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\s+average='
+        group: value
+        type: number
+        matches: exactly-one
+        reduce: mean
+    - id: correctness
+      secret: true
+      uses: builtin/numeric-diff
+      failure-status: wrong_answer
+      with:
+        actual: benchmark-result.txt
+        expected: "${{ matrix.reference }}"
+        metric: allclose
+        tolerance: 1.0e-8
+        relative-tolerance: 1.0e-14
+        require-same-count: true
+  result:
+    metrics:
+      performance:
+        value: "${{ steps.runtime.outputs.value }}"
+        samples: "${{ steps.runtime.outputs.samples }}"
+        unit: s
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.runtime.outputs.value }}"
+        full-at: "${{ matrix.full_time_s }}"
+        zero-at: "${{ matrix.zero_time_s }}"

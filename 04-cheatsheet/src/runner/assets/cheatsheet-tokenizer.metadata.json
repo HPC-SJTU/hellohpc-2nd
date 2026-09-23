@@ -1,0 +1,11 @@
+{
+  "asset": "cheatsheet-tokenizer.json.gz",
+  "compressed_sha256": "e827ef6c53a1e799693cb64d204315a3d4f754dae99f31ad1220b52662ac1df4",
+  "engine": "tokenizers",
+  "name": "Cheatsheet scoring tokenizer (DeepSeek-V3 snapshot)",
+  "source_file": "tokenizer.json",
+  "source_repository": "deepseek-ai/DeepSeek-V3",
+  "source_revision": "d990f04",
+  "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3/resolve/d990f04/tokenizer.json",
+  "uncompressed_sha256": "621ac2e32d0dba658404412318818aaa8ce8cda492e59830109d8da6b517fb41"
+}

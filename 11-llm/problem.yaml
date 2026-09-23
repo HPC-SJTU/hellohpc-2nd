@@ -1,0 +1,83 @@
+version: hellohpc/v0.3.0
+
+problem:
+  id: ascend-llm-serving
+  title: Ascend LLM Serving
+
+workspace:
+  editable:
+    - submission/build.def
+    - submission/start.sh
+  readonly:
+    - run.py
+    - benchmark.py
+    - evaluate.py
+    - dpsk_contract.py
+    - dpsk_benchmark.py
+    - data/public-dataset.jsonl
+    - data/dpsk-final/manifest.json
+    - data/dpsk-final/calibration.json
+    - data/dpsk-final/d1.jsonl
+    - data/dpsk-final/d2.jsonl
+    - data/dpsk-final/gsm.jsonl
+    - data/dpsk-final/provenance.jsonl
+    - data/dpsk-final/ATTRIBUTION.md
+
+inputs:
+  work_dir: ""
+  submission_dir: ""
+  sif: ""
+  model_path: ""
+  devices: ""
+  output_dir: ""
+  apptainer: ""
+  builder: ""
+  lock_path: ""
+  port: 8000
+
+workflow:
+  working-directory: .
+
+  matrix:
+    id: [stage0, stage1, stage2]
+    evaluator_case: [build, qwen-performance, dpsk-stage2]
+    score: [0, 30, 70]
+    case_timeout: [7320, 1140, 4920]
+
+  steps:
+    - id: stage
+      uses: builtin/run
+      with:
+        capture: false
+        command:
+          - python3
+          - run.py
+          - "${{ matrix.id }}"
+          - --cli
+          - "--work-dir=${{ inputs.work_dir }}"
+          - "--submission-dir=${{ inputs.submission_dir }}"
+          - "--sif=${{ inputs.sif }}"
+          - "--model-path=${{ inputs.model_path }}"
+          - "--devices=${{ inputs.devices }}"
+          - "--output-dir=${{ inputs.output_dir }}"
+          - "--apptainer=${{ inputs.apptainer }}"
+          - "--builder=${{ inputs.builder }}"
+          - "--lock-path=${{ inputs.lock_path }}"
+          - "--port=${{ inputs.port }}"
+      timeout: "${{ matrix.case_timeout }}"
+      failure-status: runtime_error
+      timeout-status: runtime_error
+    - id: collect
+      run: python3 run.py collect
+      timeout: 10s
+      failure-status: infrastructure_error
+      timeout-status: infrastructure_error
+
+  result:
+    metrics: "${{ steps.collect.metrics }}"
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.collect.outputs['score-coordinate'] }}"
+        full-at: 1.0
+        zero-at: 2.0

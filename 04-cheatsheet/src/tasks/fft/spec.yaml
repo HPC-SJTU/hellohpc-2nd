@@ -1,0 +1,13 @@
+name: fft
+threads: 1
+sizes:
+  public:
+  - 16x256
+  - 8x1024
+public_score:
+  16x256:
+    B: 2.0
+    T: 3.9
+  8x1024:
+    B: 2.0
+    T: 4.1

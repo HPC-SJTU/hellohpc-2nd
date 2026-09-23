@@ -1,0 +1,128 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-11"
+initial_tasks = [
+  { id = "seed-root-0", task_type = "Root" },
+  { id = "seed-flex-0", task_type = "Flexible" },
+]
+
+[[releases]]
+id = "flex-wave"
+task_type = "Flexible"
+at = { min = 80, max = 130 }
+count = { min = 10, max = 14 }
+
+[[releases]]
+id = "cpu-wave"
+task_type = "CpuHeavy"
+at = { min = 180, max = 250 }
+count = { min = 8, max = 12 }
+
+[[workflow_templates]]
+id = "roots"
+instances = { min = 10, max = 14 }
+nodes = [
+  { id = "root", task_type = "Root" },
+]
+
+[safety_limits]
+max_generated_tasks = 1024
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "Root"
+runtime_work = { min = 35, max = 55 }
+setup_work = 10
+cpu_demand = 2
+memory_reservation = 2
+
+[[task_types]]
+id = "Flexible"
+runtime_work = { min = 90, max = 140 }
+setup_work = 20
+cpu_demand = 3
+memory_reservation = 5
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 4 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 2, denominator = 3 } } }
+
+[[task_types]]
+id = "CpuHeavy"
+runtime_work = { min = 70, max = 110 }
+setup_work = 35
+cpu_demand = 9
+memory_reservation = 3
+
+[[task_types]]
+id = "MemoryHeavy"
+runtime_work = { min = 90, max = 140 }
+setup_work = 45
+cpu_demand = 3
+memory_reservation = 11
+required_capabilities = ["memory"]
+
+[[task_types]]
+id = "RecoveryLeaf"
+runtime_work = { min = 120, max = 180 }
+setup_work = 60
+cpu_demand = 6
+memory_reservation = 6
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 3 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 2 }, max = { numerator = 3, denominator = 4 } } }
+
+[[derivations]]
+id = "root-cpu"
+parent_type = "Root"
+successor_type = "CpuHeavy"
+fanout = { min = 3, max = 4 }
+
+[[derivations]]
+id = "root-memory"
+parent_type = "Root"
+successor_type = "MemoryHeavy"
+fanout = { min = 2, max = 3 }
+
+[[derivations]]
+id = "flex-recovery"
+parent_type = "Flexible"
+successor_type = "RecoveryLeaf"
+fanout = { min = 1, max = 2 }
+
+[[workers]]
+id = "worker-0-cpu"
+cpu_capacity = 20
+memory_capacity = 16
+duration_multipliers = [
+  { task_type = "CpuHeavy", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Flexible", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-1-memory"
+cpu_capacity = 14
+memory_capacity = 28
+capabilities = ["memory"]
+duration_multipliers = [
+  { task_type = "MemoryHeavy", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "RecoveryLeaf", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-balanced"
+cpu_capacity = 16
+memory_capacity = 18
+duration_multipliers = [
+  { task_type = "Flexible", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "RecoveryLeaf", ratio = { numerator = 1, denominator = 2 } },
+]
+outage_prior = { count = { min = 2, max = 3 }, initial_delay = { min = 90, max = 140 }, uptime = { min = 160, max = 220 }, duration = { min = 70, max = 110 } }
+
+[[workers]]
+id = "worker-3-general"
+cpu_capacity = 18
+memory_capacity = 18
+capabilities = ["memory"]
+duration_multipliers = [
+  { task_type = "RecoveryLeaf", ratio = { numerator = 3, denominator = 4 } },
+  { task_type = "CpuHeavy", ratio = { numerator = 2, denominator = 3 } },
+]

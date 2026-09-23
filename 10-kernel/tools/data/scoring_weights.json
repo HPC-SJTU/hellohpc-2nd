@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "anonymous_id": "public_perf_large_d",
+      "category": "large_d",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "public_perf_many_short",
+      "category": "short_segment",
+      "weight": 0.05
+    },
+    {
+      "anonymous_id": "public_perf_medium",
+      "category": "general",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "public_perf_power",
+      "category": "boundary_and_pressure",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "public_perf_small_s",
+      "category": "long_segment",
+      "weight": 0.05
+    },
+    {
+      "anonymous_id": "hidden_perf_01",
+      "category": "large_d",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "hidden_perf_02",
+      "category": "short_segment",
+      "weight": 0.1
+    },
+    {
+      "anonymous_id": "hidden_perf_03",
+      "category": "general",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "hidden_perf_04",
+      "category": "long_segment",
+      "weight": 0.1
+    },
+    {
+      "anonymous_id": "hidden_perf_05",
+      "category": "general",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "hidden_perf_06",
+      "category": "boundary_and_pressure",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "hidden_perf_07",
+      "category": "large_d",
+      "weight": 0.06666666666666667
+    },
+    {
+      "anonymous_id": "hidden_perf_08",
+      "category": "long_segment",
+      "weight": 0.05
+    },
+    {
+      "anonymous_id": "hidden_perf_09",
+      "category": "short_segment",
+      "weight": 0.05
+    },
+    {
+      "anonymous_id": "hidden_perf_10",
+      "category": "boundary_and_pressure",
+      "weight": 0.06666666666666667
+    }
+  ],
+  "category_weights": {
+    "short_segment": 0.2,
+    "general": 0.2,
+    "long_segment": 0.2,
+    "large_d": 0.2,
+    "boundary_and_pressure": 0.2
+  }
+}

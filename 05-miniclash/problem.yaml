@@ -1,0 +1,126 @@
+version: hellohpc/v0.4.0
+
+problem:
+  id: miniclash
+  title: Miniclash — parallel MD5 collision generation
+
+workspace:
+  editable:
+    - source_code/Makefile
+    - path: source_code/**
+      required: false
+  readonly:
+    - utils/gencase.py
+    - utils/verify.py
+    - utils/score_curve.py
+  exclude:
+    - "**/.git/**"
+    - "**/__pycache__/**"
+    - "**/*.o"
+    - source_code/run
+    - source_code/md5fastcoll
+    - source_code/cases/**
+
+inputs:
+  cores:
+    type: integer
+    default: 32
+    min: 1
+
+workflow:
+  working-directory: source_code
+
+  environments:
+    build:
+      shell: [bash, -l]
+      run: |
+        set -euo pipefail
+        command -v make >/dev/null
+        command -v python3 >/dev/null
+        command -v taskset >/dev/null
+        command -v "${CXX:-g++}" >/dev/null
+        export LC_ALL=C
+
+  setup:
+    - id: cpus
+      uses: builtin/cpu-set
+      failure-status: infrastructure_error
+      with:
+        count: "${{ inputs.cores }}"
+        policy: first
+
+    - id: compile
+      environment: build
+      run: |
+        set -euo pipefail
+        make all
+        test -x ./run
+      failure-status: compile_error
+      timeout: 10m
+
+  matrix:
+    id: ["1", "2", "3", "4"]
+    count: [32, 64, 128, 256]
+    dir: cases/${id}
+    tasks: cases/${id}/tasks.txt
+    # 正式评测时种子可能变化
+    seed: [1001, 2002, 3003, 4004]
+    score: 25
+    full_time_ms: [4500, 8000, 15000, 24000]
+    zero_time_ms: [60000, 120000, 240000, 480000]
+    timeout: [80, 140, 260, 500]
+    score_gamma: 1.5
+
+  steps:
+    - id: generate
+      environment: build
+      run: |
+        set -euo pipefail
+        rm -rf "${{ matrix.dir }}"
+        python3 ../utils/gencase.py "${{ matrix.count }}" "${{ matrix.dir }}" "${{ matrix.seed }}"
+      failure-status: infrastructure_error
+      timeout: 5m
+
+    - id: benchmark
+      environment: build
+      uses: builtin/benchmark
+      timeout: "${{ matrix.timeout }}"
+      with:
+        command:
+          - taskset
+          - -c
+          - "${{ steps.cpus.outputs.list }}"
+          - ./run
+          - "${{ matrix.tasks }}"
+        repeat: 1
+        warmup: 0
+
+    - id: verify
+      environment: build
+      run: python3 ../utils/verify.py "${{ matrix.tasks }}"
+      failure-status: wrong_answer
+      timeout: 5m
+
+    - id: score_curve
+      environment: build
+      run: |
+        python3 ../utils/score_curve.py \
+          --value "${{ steps.benchmark.metrics['wall-time'].value }}" \
+          --full "${{ matrix.full_time_ms }}" \
+          --zero "${{ matrix.zero_time_ms }}" \
+          --gamma "${{ matrix.score_gamma }}"
+      failure-status: infrastructure_error
+      timeout: 1m
+
+  result:
+    metrics:
+      performance:
+        value: "${{ steps.benchmark.metrics['wall-time'].value }}"
+        samples: "${{ steps.benchmark.metrics['wall-time'].samples }}"
+        unit: ms
+    score:
+      uses: builtin/score-ratio
+      with:
+        value: "${{ steps.score_curve.metrics['curve-value'].value }}"
+        full-at: 1
+        zero-at: 2

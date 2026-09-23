@@ -1,0 +1,765 @@
+// Generated. Do not edit by hand.
+const float OTHER_END_PARA10_10_4000[3] = {
+    -3.4112314996725313e+000,
+    1.0898169271921372e+000,
+    2.2513289926051381e+000,
+};
+
+const float OTHER_END_PARA10_11_4000[3] = {
+    -2.8231100082459948e+000,
+    6.7070723765202023e-001,
+    1.5731379936910446e+000,
+};
+
+const float OTHER_END_PARA10_12_4000[3] = {
+    -2.4173557331522941e+000,
+    3.0014577800926279e-001,
+    1.2244528100286338e+000,
+};
+
+const float OTHER_END_PARA10_13_4000[3] = {
+    -2.1095250105624266e+000,
+    1.6716460709965347e-001,
+    4.7940153616415165e-001,
+};
+
+const float OTHER_END_PARA10_14_4000[3] = {
+    -2.0256788654166789e+000,
+    4.1407956243258312e-002,
+    5.4362952399062137e-001,
+};
+
+const float OTHER_END_PARA10_15_4000[3] = {
+    -1.8160085737275895e+000,
+    -1.1092669548126651e-002,
+    2.2989451092069957e-002,
+};
+
+const float OTHER_END_PARA10_16_4000[3] = {
+    -1.9096497819312395e+000,
+    2.0437314970995135e-001,
+    3.3251883303848195e-001,
+};
+
+const float OTHER_END_PARA11_11_4000[3] = {
+    -3.1783960295537281e+000,
+    9.2324488533890159e-001,
+    1.9578585118045955e+000,
+};
+
+const float OTHER_END_PARA11_12_4000[3] = {
+    -2.6437378505778186e+000,
+    4.4636992254571622e-001,
+    1.5636026292409331e+000,
+};
+
+const float OTHER_END_PARA11_13_4000[3] = {
+    -2.2652844405320298e+000,
+    2.9132796830154961e-001,
+    7.4283643738153338e-001,
+};
+
+const float OTHER_END_PARA11_14_4000[3] = {
+    -2.0897392912983035e+000,
+    8.6554680655446789e-002,
+    6.4924182120885987e-001,
+};
+
+const float OTHER_END_PARA11_15_4000[3] = {
+    -1.9083640808243967e+000,
+    8.3197522431992937e-002,
+    2.0567878534389120e-001,
+};
+
+const float OTHER_END_PARA11_16_4000[3] = {
+    -1.9444132435149264e+000,
+    2.1790352832510484e-001,
+    3.6738873777692349e-001,
+};
+
+const float OTHER_END_PARA12_12_4000[3] = {
+    -2.8803307529013233e+000,
+    5.9140844259484748e-001,
+    1.9218571222846663e+000,
+};
+
+const float OTHER_END_PARA12_13_4000[3] = {
+    -2.5401322958467123e+000,
+    5.0789831947349862e-001,
+    1.1714832733602492e+000,
+};
+
+const float OTHER_END_PARA12_14_4000[3] = {
+    -2.1895775305674907e+000,
+    1.9195435758929172e-001,
+    7.8954663969171313e-001,
+};
+
+const float OTHER_END_PARA12_15_4000[3] = {
+    -2.1288161893210344e+000,
+    2.7774602987278540e-001,
+    6.0260170548828174e-001,
+};
+
+const float OTHER_END_PARA12_16_4000[3] = {
+    -2.0080590330302863e+000,
+    2.7432636939166949e-001,
+    4.4419893943627242e-001,
+};
+
+const float OTHER_END_PARA13_13_4000[3] = {
+    -2.7079113330019315e+000,
+    6.5623404285144704e-001,
+    1.3935986908062195e+000,
+};
+
+const float OTHER_END_PARA13_14_4000[3] = {
+    -2.2827836182652463e+000,
+    2.7298169155681551e-001,
+    9.7404174419034550e-001,
+};
+
+const float OTHER_END_PARA13_15_4000[3] = {
+    -2.2171800188710256e+000,
+    3.6662511612861204e-001,
+    7.2880175658543012e-001,
+};
+
+const float OTHER_END_PARA13_16_4000[3] = {
+    -2.0416094654848322e+000,
+    3.2903217029022064e-001,
+    4.4089608435317923e-001,
+};
+
+const float OTHER_END_PARA14_14_4000[3] = {
+    -2.3824028247626501e+000,
+    3.4958949202288131e-001,
+    1.2466924213737340e+000,
+};
+
+const float OTHER_END_PARA14_15_4000[3] = {
+    -2.2278731301580148e+000,
+    3.8016001708279712e-001,
+    7.6280199519878089e-001,
+};
+
+const float OTHER_END_PARA14_16_4000[3] = {
+    -2.1405161409084519e+000,
+    4.1538869289045399e-001,
+    6.1982510823016057e-001,
+};
+
+const float OTHER_END_PARA15_15_4000[3] = {
+    -2.2456472355963557e+000,
+    4.3711620513946392e-001,
+    7.1140824862895125e-001,
+};
+
+const float OTHER_END_PARA15_16_4000[3] = {
+    -2.1797051154007208e+000,
+    4.5142357121796001e-001,
+    7.1248545440759226e-001,
+};
+
+const float OTHER_END_PARA16_16_4000[3] = {
+    -2.2668246205197589e+000,
+    5.3477292316746461e-001,
+    8.9471987340356285e-001,
+};
+
+const float OTHER_END_PARA6_10_4000[3] = {
+    -2.3767417082884887e+000,
+    1.7888190437346896e-001,
+    1.5123390684192271e+000,
+};
+
+const float OTHER_END_PARA6_11_4000[3] = {
+    -2.2241619102403267e+000,
+    2.0997825499402734e-001,
+    1.2981167846643373e+000,
+};
+
+const float OTHER_END_PARA6_12_4000[3] = {
+    -1.9830238622064174e+000,
+    -1.8579278555773698e-001,
+    6.1585182343329625e-001,
+};
+
+const float OTHER_END_PARA6_13_4000[3] = {
+    -1.9101070438760712e+000,
+    6.2177478364714579e-002,
+    -1.0563863117684948e-001,
+};
+
+const float OTHER_END_PARA6_14_4000[3] = {
+    -1.8775123600569086e+000,
+    -1.6323575796929718e-001,
+    4.0513543669828150e-001,
+};
+
+const float OTHER_END_PARA6_15_4000[3] = {
+    -1.7718507305262041e+000,
+    -2.1467645673859112e-001,
+    -2.7142183340283876e-001,
+};
+
+const float OTHER_END_PARA6_16_4000[3] = {
+    -1.8111590500168471e+000,
+    2.2117808403591446e-001,
+    5.1037983923614438e-001,
+};
+
+const float OTHER_END_PARA6_6_4000[3] = {
+    -4.0699236902905165e+000,
+    1.7307447995799403e+000,
+    3.1224786965176277e+000,
+};
+
+const float OTHER_END_PARA6_7_4000[3] = {
+    -3.5744051587066115e+000,
+    1.4287846343218655e+000,
+    2.7057002462969462e+000,
+};
+
+const float OTHER_END_PARA6_8_4000[3] = {
+    -3.0652221606343022e+000,
+    9.2723267492130890e-001,
+    2.2939857601206031e+000,
+};
+
+const float OTHER_END_PARA6_9_4000[3] = {
+    -2.6847308636081801e+000,
+    1.5769557236352547e-001,
+    1.9224062528750483e+000,
+};
+
+const float OTHER_END_PARA7_10_4000[3] = {
+    -2.5021333628663442e+000,
+    3.0588723546134339e-001,
+    1.5931784815230232e+000,
+};
+
+const float OTHER_END_PARA7_11_4000[3] = {
+    -2.3076686525577927e+000,
+    3.1246653898427840e-001,
+    1.2344512796470770e+000,
+};
+
+const float OTHER_END_PARA7_12_4000[3] = {
+    -2.0770046801465614e+000,
+    -6.5655545191450865e-002,
+    9.7729654340555394e-001,
+};
+
+const float OTHER_END_PARA7_13_4000[3] = {
+    -1.9422725671034524e+000,
+    1.3908229215603665e-001,
+    7.0927778972978903e-002,
+};
+
+const float OTHER_END_PARA7_14_4000[3] = {
+    -1.9260032120935096e+000,
+    -9.7703842308492564e-002,
+    6.0194094394258590e-001,
+};
+
+const float OTHER_END_PARA7_15_4000[3] = {
+    -1.7828937402462555e+000,
+    -1.1859634226611256e-001,
+    -1.1186929455779779e-001,
+};
+
+const float OTHER_END_PARA7_16_4000[3] = {
+    -1.7994445499408753e+000,
+    1.0073913685339554e-001,
+    3.0864205309806503e-001,
+};
+
+const float OTHER_END_PARA7_7_4000[3] = {
+    -3.9719278521444665e+000,
+    1.5271103431657607e+000,
+    3.0180799517492587e+000,
+};
+
+const float OTHER_END_PARA7_8_4000[3] = {
+    -3.2762606380444046e+000,
+    1.0008118985986021e+000,
+    2.2599897227243262e+000,
+};
+
+const float OTHER_END_PARA7_9_4000[3] = {
+    -2.8618891482148299e+000,
+    4.7042438974353828e-001,
+    1.9652607321836602e+000,
+};
+
+const float OTHER_END_PARA8_10_4000[3] = {
+    -2.7064471011966131e+000,
+    5.3950511463192197e-001,
+    1.7201335233508503e+000,
+};
+
+const float OTHER_END_PARA8_11_4000[3] = {
+    -2.4522838040997872e+000,
+    4.5374308877585273e-001,
+    1.3273455478866121e+000,
+};
+
+const float OTHER_END_PARA8_12_4000[3] = {
+    -2.1540501436799997e+000,
+    -1.9850722551247122e-003,
+    1.0380641524044492e+000,
+};
+
+const float OTHER_END_PARA8_13_4000[3] = {
+    -1.9948091453021233e+000,
+    9.8568606250016705e-002,
+    3.2268104878447051e-001,
+};
+
+const float OTHER_END_PARA8_14_4000[3] = {
+    -1.9625381623336768e+000,
+    -6.4278545463963804e-002,
+    6.2433883730359907e-001,
+};
+
+const float OTHER_END_PARA8_15_4000[3] = {
+    -1.7810664481729896e+000,
+    -1.1387188604106031e-001,
+    -5.7745703115272259e-002,
+};
+
+const float OTHER_END_PARA8_16_4000[3] = {
+    -1.8277800009675700e+000,
+    1.0124048942190204e-001,
+    3.4003936509102894e-001,
+};
+
+const float OTHER_END_PARA8_8_4000[3] = {
+    -3.6003068498831881e+000,
+    1.1987394952194264e+000,
+    2.3230125150720324e+000,
+};
+
+const float OTHER_END_PARA8_9_4000[3] = {
+    -3.1169378819992870e+000,
+    6.8299661763573039e-001,
+    2.1076354244172975e+000,
+};
+
+const float OTHER_END_PARA9_10_4000[3] = {
+    -3.0067351898436114e+000,
+    7.9534386125705503e-001,
+    1.9479919296517527e+000,
+};
+
+const float OTHER_END_PARA9_11_4000[3] = {
+    -2.6190147753752955e+000,
+    5.7623234859335903e-001,
+    1.3962437298796164e+000,
+};
+
+const float OTHER_END_PARA9_12_4000[3] = {
+    -2.2906179148601060e+000,
+    1.5706932064137799e-001,
+    1.1731456456536382e+000,
+};
+
+const float OTHER_END_PARA9_13_4000[3] = {
+    -2.0346017450872083e+000,
+    8.8722666469494588e-002,
+    3.9500964923049764e-001,
+};
+
+const float OTHER_END_PARA9_14_4000[3] = {
+    -1.9905365487231810e+000,
+    -5.9747309781387941e-003,
+    5.5949705932899318e-001,
+};
+
+const float OTHER_END_PARA9_15_4000[3] = {
+    -1.7951756051347327e+000,
+    -6.2790245164196665e-002,
+    -7.3476374460266416e-003,
+};
+
+const float OTHER_END_PARA9_16_4000[3] = {
+    -1.8828675999311109e+000,
+    1.7467214786726964e-001,
+    3.7373334623578502e-001,
+};
+
+const float OTHER_END_PARA9_9_4000[3] = {
+    -3.4049425490555834e+000,
+    8.6836329143213375e-001,
+    2.2191863984659888e+000,
+};
+
+const float RIICHI_OTHER_END_PARA10_10_1000[3] = {
+    -3.7456354250048465e+000,
+    1.9257518136157659e+000,
+    1.8828241777426729e+000,
+};
+
+const float RIICHI_OTHER_END_PARA10_11_1000[3] = {
+    -3.8205312029062175e+000,
+    1.6204270865856196e+000,
+    2.7082559862418969e+000,
+};
+
+const float RIICHI_OTHER_END_PARA10_12_1000[3] = {
+    -3.0404417865081794e+000,
+    7.5106036988166147e-001,
+    1.5324585341361245e+000,
+};
+
+const float RIICHI_OTHER_END_PARA10_13_1000[3] = {
+    -2.6896168515676973e+000,
+    7.7119179059192000e-001,
+    7.8906048949901908e-001,
+};
+
+const float RIICHI_OTHER_END_PARA10_14_1000[3] = {
+    -2.4844706187994352e+000,
+    8.2019735257588111e-001,
+    -2.3782366375387795e-001,
+};
+
+const float RIICHI_OTHER_END_PARA10_15_1000[3] = {
+    -2.6597354690416708e+000,
+    8.1796627588931525e-001,
+    9.2400603670456682e-001,
+};
+
+const float RIICHI_OTHER_END_PARA11_11_1000[3] = {
+    -4.3356308616898005e+000,
+    2.0018106435444207e+000,
+    3.3395046259951169e+000,
+};
+
+const float RIICHI_OTHER_END_PARA11_12_1000[3] = {
+    -3.2131654168478989e+000,
+    8.4468793864694158e-001,
+    1.8137875466684625e+000,
+};
+
+const float RIICHI_OTHER_END_PARA11_13_1000[3] = {
+    -2.9497064144638037e+000,
+    1.0633472203212930e+000,
+    1.2273647005344706e+000,
+};
+
+const float RIICHI_OTHER_END_PARA11_14_1000[3] = {
+    -2.6131802560314843e+000,
+    7.7935083099246760e-001,
+    1.4455235697555507e-001,
+};
+
+const float RIICHI_OTHER_END_PARA11_15_1000[3] = {
+    -2.7580228243672784e+000,
+    9.6607838361127785e-001,
+    9.8301643146418016e-001,
+};
+
+const float RIICHI_OTHER_END_PARA12_12_1000[3] = {
+    -3.3357499306548974e+000,
+    8.9155658941643201e-001,
+    1.9624233518670622e+000,
+};
+
+const float RIICHI_OTHER_END_PARA12_13_1000[3] = {
+    -3.3219834815508662e+000,
+    1.3237753688579572e+000,
+    1.8350327081875921e+000,
+};
+
+const float RIICHI_OTHER_END_PARA12_14_1000[3] = {
+    -2.7248884716595687e+000,
+    7.3088754519742127e-001,
+    4.6491443367766522e-001,
+};
+
+const float RIICHI_OTHER_END_PARA12_15_1000[3] = {
+    -2.9852662698980872e+000,
+    1.1051539539991846e+000,
+    1.4185705338708869e+000,
+};
+
+const float RIICHI_OTHER_END_PARA13_13_1000[3] = {
+    -3.6043755002803679e+000,
+    1.5007167797067844e+000,
+    2.2715399232541840e+000,
+};
+
+const float RIICHI_OTHER_END_PARA13_14_1000[3] = {
+    -3.0256582340919467e+000,
+    1.0597677951868352e+000,
+    9.4851120296113800e-001,
+};
+
+const float RIICHI_OTHER_END_PARA13_15_1000[3] = {
+    -3.0868351949846087e+000,
+    1.1733548499437370e+000,
+    1.5808673892350071e+000,
+};
+
+const float RIICHI_OTHER_END_PARA14_14_1000[3] = {
+    -3.3359344340024486e+000,
+    1.2721291555834282e+000,
+    1.6775286584074787e+000,
+};
+
+const float RIICHI_OTHER_END_PARA14_15_1000[3] = {
+    -3.1215130014913059e+000,
+    1.1588495821711844e+000,
+    1.8131951131934603e+000,
+};
+
+const float RIICHI_OTHER_END_PARA15_15_1000[3] = {
+    -3.0913649739516211e+000,
+    1.1666690787041889e+000,
+    1.7329911223486705e+000,
+};
+
+const float RIICHI_OTHER_END_PARA7_10_1000[3] = {
+    -2.8038171885095120e+000,
+    1.0319812978983465e+000,
+    1.3025229911307110e+000,
+};
+
+const float RIICHI_OTHER_END_PARA7_11_1000[3] = {
+    -3.0373227366834397e+000,
+    1.7535697330243678e+000,
+    2.0877412817211440e+000,
+};
+
+const float RIICHI_OTHER_END_PARA7_12_1000[3] = {
+    -2.7065662967290738e+000,
+    3.8240025174686348e-001,
+    1.7069348437777510e+000,
+};
+
+const float RIICHI_OTHER_END_PARA7_13_1000[3] = {
+    -2.4180489394983407e+000,
+    2.7724714873965772e-001,
+    6.5259051021355008e-001,
+};
+
+const float RIICHI_OTHER_END_PARA7_14_1000[3] = {
+    -2.3150759161241639e+000,
+    1.1401752032415877e+000,
+    -1.4561827968391132e+000,
+};
+
+const float RIICHI_OTHER_END_PARA7_15_1000[3] = {
+    -2.4277856095999675e+000,
+    1.0673761086833646e+000,
+    7.6940484633468786e-001,
+};
+
+const float RIICHI_OTHER_END_PARA7_7_1000[3] = {
+    -4.7172641534966777e+000,
+    2.0763000897343660e+000,
+    3.8780521201509983e+000,
+};
+
+const float RIICHI_OTHER_END_PARA7_8_1000[3] = {
+    -3.4275594140389152e+000,
+    1.2626802642636015e+000,
+    2.0451968102874467e+000,
+};
+
+const float RIICHI_OTHER_END_PARA7_9_1000[3] = {
+    -3.0499333896592966e+000,
+    1.1270164868820867e+000,
+    2.2072602890574728e+000,
+};
+
+const float RIICHI_OTHER_END_PARA8_10_1000[3] = {
+    -2.8824867218506918e+000,
+    1.0662056864631426e+000,
+    1.1360379291679228e+000,
+};
+
+const float RIICHI_OTHER_END_PARA8_11_1000[3] = {
+    -3.2134831250208911e+000,
+    1.5856806415925866e+000,
+    2.1708338119359492e+000,
+};
+
+const float RIICHI_OTHER_END_PARA8_12_1000[3] = {
+    -2.7684658858808353e+000,
+    5.9832239403037979e-001,
+    1.4131782428842825e+000,
+};
+
+const float RIICHI_OTHER_END_PARA8_13_1000[3] = {
+    -2.4830591633712134e+000,
+    4.4425059030100433e-001,
+    6.7770461559325867e-001,
+};
+
+const float RIICHI_OTHER_END_PARA8_14_1000[3] = {
+    -2.3168166832213681e+000,
+    9.7593766662937365e-001,
+    -1.1363508487911278e+000,
+};
+
+const float RIICHI_OTHER_END_PARA8_15_1000[3] = {
+    -2.5211719697051671e+000,
+    1.0502041892688339e+000,
+    8.6967282644755983e-001,
+};
+
+const float RIICHI_OTHER_END_PARA8_8_1000[3] = {
+    -3.6827166216024225e+000,
+    1.5976542892081262e+000,
+    1.9279565046074105e+000,
+};
+
+const float RIICHI_OTHER_END_PARA8_9_1000[3] = {
+    -3.2881279953877711e+000,
+    1.3142125340690276e+000,
+    2.2690400903560173e+000,
+};
+
+const float RIICHI_OTHER_END_PARA9_10_1000[3] = {
+    -3.2462475684846162e+000,
+    1.5469579318579993e+000,
+    1.5337115488515856e+000,
+};
+
+const float RIICHI_OTHER_END_PARA9_11_1000[3] = {
+    -3.5147030013820411e+000,
+    1.4258608300182849e+000,
+    2.6048615162575106e+000,
+};
+
+const float RIICHI_OTHER_END_PARA9_12_1000[3] = {
+    -2.8994044832126296e+000,
+    4.3313296530987655e-001,
+    1.5848957020726964e+000,
+};
+
+const float RIICHI_OTHER_END_PARA9_13_1000[3] = {
+    -2.5815378096866941e+000,
+    5.7115150252677260e-001,
+    7.8626268392844334e-001,
+};
+
+const float RIICHI_OTHER_END_PARA9_14_1000[3] = {
+    -2.2878795562111671e+000,
+    6.7812794208589167e-001,
+    -9.4041585946855022e-001,
+};
+
+const float RIICHI_OTHER_END_PARA9_15_1000[3] = {
+    -2.6564002662619650e+000,
+    1.0328732808239884e+000,
+    1.0282773338371609e+000,
+};
+
+const float RIICHI_OTHER_END_PARA9_9_1000[3] = {
+    -3.6971335598092918e+000,
+    1.5426287543414274e+000,
+    2.7024212162981480e+000,
+};
+
+extern const float *const OTHER_END_PARA[17][17] = {
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, OTHER_END_PARA6_6_4000,
+     OTHER_END_PARA6_7_4000, OTHER_END_PARA6_8_4000, OTHER_END_PARA6_9_4000,
+     OTHER_END_PARA6_10_4000, OTHER_END_PARA6_11_4000, OTHER_END_PARA6_12_4000,
+     OTHER_END_PARA6_13_4000, OTHER_END_PARA6_14_4000, OTHER_END_PARA6_15_4000,
+     OTHER_END_PARA6_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, OTHER_END_PARA7_7_4000,
+     OTHER_END_PARA7_8_4000, OTHER_END_PARA7_9_4000, OTHER_END_PARA7_10_4000,
+     OTHER_END_PARA7_11_4000, OTHER_END_PARA7_12_4000, OTHER_END_PARA7_13_4000,
+     OTHER_END_PARA7_14_4000, OTHER_END_PARA7_15_4000, OTHER_END_PARA7_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, OTHER_END_PARA8_8_4000,
+     OTHER_END_PARA8_9_4000, OTHER_END_PARA8_10_4000, OTHER_END_PARA8_11_4000,
+     OTHER_END_PARA8_12_4000, OTHER_END_PARA8_13_4000, OTHER_END_PARA8_14_4000,
+     OTHER_END_PARA8_15_4000, OTHER_END_PARA8_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     OTHER_END_PARA9_9_4000, OTHER_END_PARA9_10_4000, OTHER_END_PARA9_11_4000,
+     OTHER_END_PARA9_12_4000, OTHER_END_PARA9_13_4000, OTHER_END_PARA9_14_4000,
+     OTHER_END_PARA9_15_4000, OTHER_END_PARA9_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     OTHER_END_PARA10_10_4000, OTHER_END_PARA10_11_4000, OTHER_END_PARA10_12_4000,
+     OTHER_END_PARA10_13_4000, OTHER_END_PARA10_14_4000, OTHER_END_PARA10_15_4000,
+     OTHER_END_PARA10_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, OTHER_END_PARA11_11_4000, OTHER_END_PARA11_12_4000, OTHER_END_PARA11_13_4000,
+     OTHER_END_PARA11_14_4000, OTHER_END_PARA11_15_4000, OTHER_END_PARA11_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, OTHER_END_PARA12_12_4000, OTHER_END_PARA12_13_4000, OTHER_END_PARA12_14_4000,
+     OTHER_END_PARA12_15_4000, OTHER_END_PARA12_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, OTHER_END_PARA13_13_4000, OTHER_END_PARA13_14_4000,
+     OTHER_END_PARA13_15_4000, OTHER_END_PARA13_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, OTHER_END_PARA14_14_4000, OTHER_END_PARA14_15_4000,
+     OTHER_END_PARA14_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, OTHER_END_PARA15_15_4000,
+     OTHER_END_PARA15_16_4000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, OTHER_END_PARA16_16_4000}};
+
+extern const float *const RIICHI_OTHER_END_PARA[16][16] = {
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, RIICHI_OTHER_END_PARA7_7_1000,
+     RIICHI_OTHER_END_PARA7_8_1000, RIICHI_OTHER_END_PARA7_9_1000, RIICHI_OTHER_END_PARA7_10_1000,
+     RIICHI_OTHER_END_PARA7_11_1000, RIICHI_OTHER_END_PARA7_12_1000, RIICHI_OTHER_END_PARA7_13_1000,
+     RIICHI_OTHER_END_PARA7_14_1000, RIICHI_OTHER_END_PARA7_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     RIICHI_OTHER_END_PARA8_8_1000, RIICHI_OTHER_END_PARA8_9_1000, RIICHI_OTHER_END_PARA8_10_1000,
+     RIICHI_OTHER_END_PARA8_11_1000, RIICHI_OTHER_END_PARA8_12_1000, RIICHI_OTHER_END_PARA8_13_1000,
+     RIICHI_OTHER_END_PARA8_14_1000, RIICHI_OTHER_END_PARA8_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     RIICHI_OTHER_END_PARA9_9_1000, RIICHI_OTHER_END_PARA9_10_1000, RIICHI_OTHER_END_PARA9_11_1000,
+     RIICHI_OTHER_END_PARA9_12_1000, RIICHI_OTHER_END_PARA9_13_1000, RIICHI_OTHER_END_PARA9_14_1000,
+     RIICHI_OTHER_END_PARA9_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     RIICHI_OTHER_END_PARA10_10_1000, RIICHI_OTHER_END_PARA10_11_1000,
+     RIICHI_OTHER_END_PARA10_12_1000, RIICHI_OTHER_END_PARA10_13_1000,
+     RIICHI_OTHER_END_PARA10_14_1000, RIICHI_OTHER_END_PARA10_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, RIICHI_OTHER_END_PARA11_11_1000, RIICHI_OTHER_END_PARA11_12_1000,
+     RIICHI_OTHER_END_PARA11_13_1000, RIICHI_OTHER_END_PARA11_14_1000,
+     RIICHI_OTHER_END_PARA11_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, RIICHI_OTHER_END_PARA12_12_1000, RIICHI_OTHER_END_PARA12_13_1000,
+     RIICHI_OTHER_END_PARA12_14_1000, RIICHI_OTHER_END_PARA12_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, RIICHI_OTHER_END_PARA13_13_1000, RIICHI_OTHER_END_PARA13_14_1000,
+     RIICHI_OTHER_END_PARA13_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, RIICHI_OTHER_END_PARA14_14_1000,
+     RIICHI_OTHER_END_PARA14_15_1000},
+    {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     nullptr, nullptr, nullptr, nullptr, nullptr, RIICHI_OTHER_END_PARA15_15_1000}};

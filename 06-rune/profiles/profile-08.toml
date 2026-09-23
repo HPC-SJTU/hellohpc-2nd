@@ -1,0 +1,133 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-08"
+initial_tasks = [
+  { id = "seed-root-0", task_type = "Root" },
+  { id = "seed-root-1", task_type = "Root" },
+]
+
+[[releases]]
+id = "cpu-wave"
+task_type = "Cpu"
+at = { min = 150, max = 230 }
+count = { min = 10, max = 14 }
+
+[[workflow_templates]]
+id = "roots"
+instances = { min = 10, max = 12 }
+nodes = [
+  { id = "root", task_type = "Root" },
+]
+
+[safety_limits]
+max_generated_tasks = 2048
+max_batch_size = 6
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 100000
+
+[[task_types]]
+id = "Root"
+runtime_work = { min = 35, max = 60 }
+setup_work = 10
+cpu_demand = 2
+memory_reservation = 2
+
+[[task_types]]
+id = "Affinity"
+runtime_work = { min = 160, max = 230 }
+setup_work = 70
+cpu_demand = 4
+memory_reservation = 4
+
+[[task_types]]
+id = "Batch"
+runtime_work = { min = 50, max = 80 }
+setup_work = 240
+cpu_demand = 3
+memory_reservation = 3
+
+[[task_types]]
+id = "Scarce"
+runtime_work = { min = 180, max = 260 }
+setup_work = 60
+cpu_demand = 5
+memory_reservation = 10
+required_capabilities = ["scarce"]
+
+[[task_types]]
+id = "Cpu"
+runtime_work = { min = 90, max = 140 }
+setup_work = 25
+cpu_demand = 8
+memory_reservation = 2
+
+[[derivations]]
+id = "root-affinity"
+parent_type = "Root"
+successor_type = "Affinity"
+fanout = { min = 2, max = 3 }
+
+[[derivations]]
+id = "root-batch"
+parent_type = "Root"
+successor_type = "Batch"
+fanout = { min = 3, max = 4 }
+
+[[derivations]]
+id = "root-scarce"
+parent_type = "Root"
+successor_type = "Scarce"
+fanout = { min = 1, max = 2 }
+
+[[derivations]]
+id = "root-cpu"
+parent_type = "Root"
+successor_type = "Cpu"
+fanout = { min = 2, max = 3 }
+
+[[workers]]
+id = "worker-0-scarce"
+cpu_capacity = 20
+memory_capacity = 28
+capabilities = ["scarce"]
+duration_multipliers = [
+  { task_type = "Affinity", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "Scarce", ratio = { numerator = 1, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-1-batch"
+cpu_capacity = 18
+memory_capacity = 20
+duration_multipliers = [
+  { task_type = "Batch", ratio = { numerator = 1, denominator = 4 } },
+  { task_type = "Affinity", ratio = { numerator = 5, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-cpu"
+cpu_capacity = 22
+memory_capacity = 14
+duration_multipliers = [
+  { task_type = "Cpu", ratio = { numerator = 1, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-3-cpu"
+cpu_capacity = 20
+memory_capacity = 14
+duration_multipliers = [
+  { task_type = "Cpu", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "Affinity", ratio = { numerator = 3, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-4-stable"
+cpu_capacity = 18
+memory_capacity = 24
+capabilities = ["scarce"]
+duration_multipliers = [
+  { task_type = "Scarce", ratio = { numerator = 3, denominator = 4 } },
+  { task_type = "Batch", ratio = { numerator = 3, denominator = 4 } },
+]

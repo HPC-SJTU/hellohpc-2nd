@@ -1,0 +1,154 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-07"
+initial_tasks = [
+  { id = "seed-root-0", task_type = "Root" },
+  { id = "seed-root-1", task_type = "Root" },
+]
+
+[[releases]]
+id = "late-filler"
+task_type = "Filler"
+at = { min = 220, max = 320 }
+count = { min = 12, max = 16 }
+
+[[workflow_templates]]
+id = "pipe"
+instances = { min = 8, max = 10 }
+nodes = [
+  { id = "root", task_type = "Root" },
+]
+
+[safety_limits]
+max_generated_tasks = 2048
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 100000
+
+[[task_types]]
+id = "Root"
+runtime_work = { min = 40, max = 70 }
+setup_work = 15
+cpu_demand = 2
+memory_reservation = 2
+
+[[task_types]]
+id = "StageA"
+runtime_work = { min = 80, max = 120 }
+setup_work = 90
+cpu_demand = 4
+memory_reservation = 3
+
+[[task_types]]
+id = "StageB"
+runtime_work = { min = 110, max = 160 }
+setup_work = 50
+cpu_demand = 5
+memory_reservation = 8
+required_capabilities = ["scarce"]
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 6 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 2, denominator = 3 } } }
+
+[[task_types]]
+id = "StageC"
+runtime_work = { min = 90, max = 140 }
+setup_work = 130
+cpu_demand = 6
+memory_reservation = 3
+
+[[task_types]]
+id = "StageD"
+runtime_work = { min = 120, max = 180 }
+setup_work = 60
+cpu_demand = 4
+memory_reservation = 6
+
+[[task_types]]
+id = "Leaf"
+runtime_work = { min = 70, max = 110 }
+setup_work = 110
+cpu_demand = 4
+memory_reservation = 3
+
+[[task_types]]
+id = "Filler"
+runtime_work = { min = 100, max = 150 }
+setup_work = 20
+cpu_demand = 5
+memory_reservation = 4
+
+[[derivations]]
+id = "root-a"
+parent_type = "Root"
+successor_type = "StageA"
+fanout = { min = 3, max = 3 }
+
+[[derivations]]
+id = "a-b"
+parent_type = "StageA"
+successor_type = "StageB"
+fanout = { min = 1, max = 1 }
+
+[[derivations]]
+id = "b-c"
+parent_type = "StageB"
+successor_type = "StageC"
+fanout = { min = 2, max = 2 }
+
+[[derivations]]
+id = "c-d"
+parent_type = "StageC"
+successor_type = "StageD"
+fanout = { min = 1, max = 1 }
+
+[[derivations]]
+id = "d-leaf"
+parent_type = "StageD"
+successor_type = "Leaf"
+fanout = { min = 2, max = 2 }
+
+[[workers]]
+id = "worker-0-scarce-risky"
+cpu_capacity = 18
+memory_capacity = 24
+capabilities = ["scarce"]
+duration_multipliers = [
+  { task_type = "StageB", ratio = { numerator = 1, denominator = 4 } },
+]
+outage_prior = { count = { min = 2, max = 3 }, initial_delay = { min = 180, max = 260 }, uptime = { min = 280, max = 360 }, duration = { min = 80, max = 130 } }
+
+[[workers]]
+id = "worker-1-ac"
+cpu_capacity = 18
+memory_capacity = 20
+duration_multipliers = [
+  { task_type = "StageA", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "StageC", ratio = { numerator = 1, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-2-d"
+cpu_capacity = 16
+memory_capacity = 20
+duration_multipliers = [
+  { task_type = "StageD", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Filler", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-3-leaf"
+cpu_capacity = 16
+memory_capacity = 18
+duration_multipliers = [
+  { task_type = "Leaf", ratio = { numerator = 1, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-4-stable"
+cpu_capacity = 16
+memory_capacity = 22
+capabilities = ["scarce"]
+duration_multipliers = [
+  { task_type = "StageB", ratio = { numerator = 3, denominator = 4 } },
+  { task_type = "Filler", ratio = { numerator = 1, denominator = 2 } },
+]

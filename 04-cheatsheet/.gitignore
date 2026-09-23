@@ -1,0 +1,36 @@
+# build artifacts
+build/
+*.o
+*.so
+*.out
+a.out
+
+# workspaces created per-run
+runs/
+workspace/
+.best/
+.candidates/
+
+# secrets
+.env
+.env.*
+!.env.example
+*.key
+*.local.md
+
+# python
+__pycache__/
+*.pyc
+
+# results
+result.yaml
+result.json
+submission.zip
+.hellohpc/
+
+# opencode local state
+.opencode/
+
+# local AI-assistant planning notes; never part of the problem repository
+.claude/
+.codex-tmp/

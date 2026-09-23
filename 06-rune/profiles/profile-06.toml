@@ -1,0 +1,103 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-06"
+initial_tasks = [
+  { id = "seed-flex-0", task_type = "Flexible" },
+  { id = "seed-scarce-0", task_type = "Scarce" },
+]
+
+[[releases]]
+id = "flex-wave"
+task_type = "Flexible"
+at = { min = 60, max = 110 }
+count = { min = 16, max = 22 }
+
+[[releases]]
+id = "scarce-wave"
+task_type = "Scarce"
+at = { min = 140, max = 200 }
+count = { min = 8, max = 12 }
+
+[[workflow_templates]]
+id = "flex-pool"
+instances = { min = 18, max = 24 }
+nodes = [
+  { id = "flex", task_type = "Flexible" },
+]
+
+[safety_limits]
+max_generated_tasks = 512
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "Flexible"
+runtime_work = { min = 90, max = 140 }
+setup_work = 20
+cpu_demand = 4
+memory_reservation = 5
+required_capabilities = ["general"]
+
+[[task_types]]
+id = "Scarce"
+runtime_work = { min = 180, max = 260 }
+setup_work = 70
+cpu_demand = 6
+memory_reservation = 10
+required_capabilities = ["scarce"]
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 5 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 2, denominator = 3 } } }
+
+[[task_types]]
+id = "ScarceTail"
+runtime_work = { min = 80, max = 120 }
+setup_work = 40
+cpu_demand = 4
+memory_reservation = 6
+required_capabilities = ["scarce"]
+
+[[derivations]]
+id = "scarce-tail"
+parent_type = "Scarce"
+successor_type = "ScarceTail"
+fanout = { min = 1, max = 2 }
+
+[[workers]]
+id = "worker-0-scarce-fast"
+cpu_capacity = 18
+memory_capacity = 24
+capabilities = ["general", "scarce"]
+duration_multipliers = [
+  { task_type = "Flexible", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Scarce", ratio = { numerator = 1, denominator = 4 } },
+]
+outage_prior = { count = { min = 2, max = 3 }, initial_delay = { min = 90, max = 140 }, uptime = { min = 180, max = 240 }, duration = { min = 70, max = 110 } }
+
+[[workers]]
+id = "worker-1-scarce-stable"
+cpu_capacity = 16
+memory_capacity = 22
+capabilities = ["general", "scarce"]
+duration_multipliers = [
+  { task_type = "Scarce", ratio = { numerator = 3, denominator = 4 } },
+  { task_type = "ScarceTail", ratio = { numerator = 2, denominator = 3 } },
+]
+
+[[workers]]
+id = "worker-2-general"
+cpu_capacity = 18
+memory_capacity = 18
+capabilities = ["general"]
+duration_multipliers = [
+  { task_type = "Flexible", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-3-general"
+cpu_capacity = 16
+memory_capacity = 16
+capabilities = ["general"]
+duration_multipliers = [
+  { task_type = "Flexible", ratio = { numerator = 1, denominator = 2 } },
+]

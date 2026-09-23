@@ -1,0 +1,168 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-13"
+initial_tasks = [
+  { id = "seed-cpu-0", task_type = "CpuFiller" },
+  { id = "seed-mem-0", task_type = "MemoryFiller" },
+]
+
+[[releases]]
+id = "batch-wave-a"
+task_type = "Batch"
+at = { min = 60, max = 100 }
+count = { min = 8, max = 12 }
+
+[[releases]]
+id = "batch-wave-b"
+task_type = "Batch"
+at = { min = 130, max = 190 }
+count = { min = 16, max = 22 }
+
+[[releases]]
+id = "memory-burst"
+task_type = "MemoryBurst"
+at = { min = 200, max = 270 }
+count = { min = 8, max = 12 }
+
+[[workflow_templates]]
+id = "diamond"
+instances = { min = 10, max = 14 }
+nodes = [
+  { id = "root", task_type = "JoinRoot" },
+  { id = "cpu", task_type = "JoinCpu", depends_on = ["root"] },
+  { id = "memory", task_type = "JoinMemory", depends_on = ["root"] },
+  { id = "merge", task_type = "JoinMerge", depends_on = ["cpu", "memory"] },
+  { id = "tail", task_type = "CriticalTail", depends_on = ["merge"] },
+]
+
+[safety_limits]
+max_generated_tasks = 1024
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "CpuFiller"
+runtime_work = { min = 90, max = 140 }
+setup_work = 15
+cpu_demand = 9
+memory_reservation = 3
+
+[[task_types]]
+id = "MemoryFiller"
+runtime_work = { min = 90, max = 140 }
+setup_work = 15
+cpu_demand = 3
+memory_reservation = 11
+
+[[task_types]]
+id = "Batch"
+runtime_work = { min = 40, max = 65 }
+setup_work = 240
+cpu_demand = 3
+memory_reservation = 3
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 6 }, max_failures = 1, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 2, denominator = 3 } } }
+
+[[task_types]]
+id = "MemoryBurst"
+runtime_work = { min = 120, max = 180 }
+setup_work = 50
+cpu_demand = 3
+memory_reservation = 12
+required_capabilities = ["memory"]
+
+[[task_types]]
+id = "JoinRoot"
+runtime_work = { min = 40, max = 65 }
+setup_work = 15
+cpu_demand = 3
+memory_reservation = 2
+
+[[task_types]]
+id = "JoinCpu"
+runtime_work = { min = 110, max = 160 }
+setup_work = 35
+cpu_demand = 8
+memory_reservation = 3
+
+[[task_types]]
+id = "JoinMemory"
+runtime_work = { min = 100, max = 150 }
+setup_work = 45
+cpu_demand = 3
+memory_reservation = 10
+required_capabilities = ["memory"]
+
+[[task_types]]
+id = "JoinMerge"
+runtime_work = { min = 30, max = 50 }
+setup_work = 20
+cpu_demand = 4
+memory_reservation = 4
+required_capabilities = ["merge"]
+
+[[task_types]]
+id = "CriticalTail"
+runtime_work = { min = 160, max = 230 }
+setup_work = 70
+cpu_demand = 6
+memory_reservation = 8
+required_capabilities = ["tail"]
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 4 }, max_failures = 2, failure_fraction = { min = { numerator = 1, denominator = 2 }, max = { numerator = 3, denominator = 4 } } }
+
+[[workers]]
+id = "worker-0-fast-risky"
+cpu_capacity = 20
+memory_capacity = 24
+capabilities = ["memory", "merge", "tail"]
+duration_multipliers = [
+  { task_type = "JoinCpu", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "JoinMemory", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "JoinMerge", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "CriticalTail", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "MemoryBurst", ratio = { numerator = 1, denominator = 3 } },
+]
+outage_prior = { count = { min = 3, max = 4 }, initial_delay = { min = 90, max = 140 }, uptime = { min = 180, max = 250 }, duration = { min = 80, max = 120 } }
+
+[[workers]]
+id = "worker-1-memory-stable"
+cpu_capacity = 14
+memory_capacity = 30
+capabilities = ["memory", "merge", "tail"]
+duration_multipliers = [
+  { task_type = "JoinMemory", ratio = { numerator = 2, denominator = 3 } },
+  { task_type = "MemoryBurst", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "CriticalTail", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-cpu"
+cpu_capacity = 22
+memory_capacity = 16
+capabilities = ["merge"]
+duration_multipliers = [
+  { task_type = "CpuFiller", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "JoinCpu", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "Batch", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-3-batch"
+cpu_capacity = 18
+memory_capacity = 20
+capabilities = ["tail"]
+duration_multipliers = [
+  { task_type = "Batch", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "CriticalTail", ratio = { numerator = 5, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-4-filler"
+cpu_capacity = 16
+memory_capacity = 22
+capabilities = ["memory"]
+duration_multipliers = [
+  { task_type = "MemoryFiller", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "Batch", ratio = { numerator = 2, denominator = 3 } },
+]

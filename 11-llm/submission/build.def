@@ -1,0 +1,19 @@
+Bootstrap: docker
+From: TODO_APPROVED_BASE_IMAGE@sha256:TODO_SHA256_DIGEST
+
+%labels
+    org.hellohpc.purpose "ascend-llm-inference"
+
+%environment
+    export PYTHONUNBUFFERED=1
+
+%post
+    set -eu
+    # Install only the pinned inference stack and its runtime dependencies.
+    # Do not copy models, credentials, launch scripts, or host-specific paths.
+
+%test
+    set -eu
+    command -v python3
+    python3 -c 'import torch, torch_npu; print(torch.__version__)'
+    # Add an import check for the inference framework installed in %post.

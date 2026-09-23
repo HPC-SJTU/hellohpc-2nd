@@ -1,0 +1,107 @@
+protocol = "rune-http-v1"
+ruleset = "rune-deterministic-v2"
+profile = "profile-05"
+initial_tasks = [
+  { id = "seed-heavy-0", task_type = "Heavy" },
+  { id = "seed-light-0", task_type = "Light" },
+]
+
+[[releases]]
+id = "light-wave"
+task_type = "Light"
+at = { min = 40, max = 80 }
+count = { min = 16, max = 22 }
+
+[[releases]]
+id = "heavy-wave"
+task_type = "Heavy"
+at = { min = 120, max = 180 }
+count = { min = 6, max = 10 }
+
+[[workflow_templates]]
+id = "parents"
+instances = { min = 12, max = 16 }
+nodes = [
+  { id = "parent", task_type = "Parent" },
+]
+
+[safety_limits]
+max_generated_tasks = 512
+max_batch_size = 8
+max_identifier_length = 96
+max_recent_events = 8192
+max_decisions = 50000
+
+[[task_types]]
+id = "Heavy"
+runtime_work = { min = 180, max = 260 }
+setup_work = 25
+cpu_demand = 8
+memory_reservation = 4
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 5 }, max_failures = 1, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 2, denominator = 3 } } }
+
+[[task_types]]
+id = "Light"
+runtime_work = { min = 30, max = 50 }
+setup_work = 10
+cpu_demand = 3
+memory_reservation = 2
+
+[[task_types]]
+id = "Parent"
+runtime_work = { min = 45, max = 75 }
+setup_work = 15
+cpu_demand = 3
+memory_reservation = 2
+
+[[task_types]]
+id = "Burst"
+runtime_work = { min = 55, max = 90 }
+setup_work = 20
+cpu_demand = 5
+memory_reservation = 3
+failure_prior = { kind = "truncated_geometric", failure_probability = { numerator = 1, denominator = 6 }, max_failures = 1, failure_fraction = { min = { numerator = 1, denominator = 3 }, max = { numerator = 2, denominator = 3 } } }
+
+[[derivations]]
+id = "parent-burst"
+parent_type = "Parent"
+successor_type = "Burst"
+fanout = { min = 3, max = 4 }
+
+[[workers]]
+id = "worker-0-fast-risky"
+cpu_capacity = 16
+memory_capacity = 20
+duration_multipliers = [
+  { task_type = "Heavy", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Burst", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Light", ratio = { numerator = 1, denominator = 4 } },
+]
+outage_prior = { count = { min = 3, max = 4 }, initial_delay = { min = 70, max = 110 }, uptime = { min = 140, max = 200 }, duration = { min = 60, max = 100 } }
+
+[[workers]]
+id = "worker-1-stable"
+cpu_capacity = 16
+memory_capacity = 20
+duration_multipliers = [
+  { task_type = "Heavy", ratio = { numerator = 3, denominator = 4 } },
+  { task_type = "Burst", ratio = { numerator = 3, denominator = 4 } },
+]
+
+[[workers]]
+id = "worker-2-light"
+cpu_capacity = 14
+memory_capacity = 16
+duration_multipliers = [
+  { task_type = "Light", ratio = { numerator = 1, denominator = 3 } },
+  { task_type = "Parent", ratio = { numerator = 1, denominator = 2 } },
+]
+
+[[workers]]
+id = "worker-3-mixed"
+cpu_capacity = 12
+memory_capacity = 16
+duration_multipliers = [
+  { task_type = "Burst", ratio = { numerator = 1, denominator = 2 } },
+  { task_type = "Light", ratio = { numerator = 2, denominator = 3 } },
+]
