@@ -103,13 +103,25 @@ def public_summary(normalized_score: float) -> Mapping[str, object]:
     }
 
 
-def hellohpc_step_payload(normalized_score: float) -> Mapping[str, object]:
+def evaluation_message(manifest: Mapping[str, object]) -> str:
+    parts = ["", f"模型：{manifest['model']}"]
+    for case in manifest["cases"]:
+        for run, score in zip(case["runs"], case["run_scores"]):
+            parts.append(f"Agent {run['run_index']} 原始性能分：{score * 100:.2f}")
+    length = manifest["length_adjustment"]
+    parts.append(
+        f"Skill：{length['estimated_tokens']} tokens｜倍率：{length['length_multiplier']:.5g}"
+    )
+    return "\n".join(parts)
+
+def hellohpc_step_payload(normalized_score: float, message: str = "") -> Mapping[str, object]:
     normalized = min(max(float(normalized_score), 0.0), 1.0)
     if not math.isfinite(normalized):
         raise RuntimeError("public score is not finite")
     return {
         "outputs": {
             "status": "success",
+            "message": message,
             "normalized_score": normalized,
             "score_input": 2.0 / (1.0 + normalized),
         }
@@ -171,10 +183,10 @@ def atomic_write_yaml(path: Path, payload: Mapping[str, object]) -> None:
             os.unlink(temporary_name)
 
 
-def write_hellohpc_output(normalized_score: float) -> Path:
+def write_hellohpc_output(normalized_score: float, message: str = "") -> Path:
     raw = os.environ.get("HELLOHPC_OUTPUT", "")
     if not raw:
         raise RuntimeError("--hellohpc-output requires HELLOHPC_OUTPUT")
     path = safe_output_path(Path(raw))
-    atomic_write_json(path, hellohpc_step_payload(normalized_score))
+    atomic_write_json(path, hellohpc_step_payload(normalized_score, message))
     return path

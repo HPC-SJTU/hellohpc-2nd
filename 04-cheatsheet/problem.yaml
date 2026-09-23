@@ -124,6 +124,7 @@ workflow:
       failure-status: wrong_answer
 
   result:
+    message: "${{ steps.evaluate.outputs.message }}"
     score:
       uses: builtin/score-ratio
       with:

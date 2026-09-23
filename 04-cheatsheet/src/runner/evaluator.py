@@ -13,6 +13,7 @@ from src.runner import public_evaluator
 from src.runner.evaluation_io import (
     atomic_write_json,
     atomic_write_yaml,
+    evaluation_message,
     public_summary,
     resolve_trusted_output_root,
     write_hellohpc_output,
@@ -72,7 +73,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         else:
             summary = dict(public_summary(result.normalized_score))
             if args.hellohpc_output:
-                write_hellohpc_output(result.normalized_score)
+                write_hellohpc_output(
+                    result.normalized_score, evaluation_message(result.manifest)
+                )
         atomic_write_yaml(Path(args.out), summary)
         atomic_write_json(trusted_root / "suite-manifest.json", result.manifest)
     except (OSError, RuntimeError, ValueError) as exc:

@@ -490,6 +490,7 @@ def run_suite(
                 fold = score_mod.stability_fold(run_results, B, T, weights=None)
                 task_score = min(1.0, max(0.0, float(fold["effective_score"])))
                 case["scored_run_count"] = int(fold["scored_run_count"])
+                case["run_scores"] = fold["run_scores"]
                 case["selected_run_index"] = fold["selected_run_index"]
                 case["selected_S"] = fold["selected_S"]
                 case["normalized_score"] = task_score
