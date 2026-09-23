@@ -86,7 +86,7 @@ description: CPU 算子优化指南。
 
 ## 运行环境
 
-正式评测运行在 Kunpeng 920 ARM64 Linux 平台，使用评测容器提供的 GCC。默认编译参数为：
+正式评测运行在 Kunpeng 920 ARM64 Linux 平台，使用评测容器提供的 GCC。任一算子均在单个 CPU 核心上以单线程运行。默认编译参数为：
 
 ```text
 g++ -O3 -march=native -fopenmp -std=c++17 -funroll-loops
